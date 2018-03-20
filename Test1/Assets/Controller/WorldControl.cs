@@ -29,6 +29,7 @@ public class WorldControl : MonoBehaviour {
             }
         }     
 	}
+    //Function called when a tiletype is changed in order to update the sprite
     void TileTypeChanged(Tile tile_sr, GameObject tile_go)
     {
         if (tile_sr.Type == Tile.TileType.Empty)

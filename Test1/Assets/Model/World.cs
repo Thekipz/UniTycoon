@@ -7,7 +7,7 @@ public class World {
     Tile[,] tiles;
     int width;
     int height;
-
+    //Default world constructor, width and height are the number of tiles on map
     public World(int width = 20, int height = 20)
     {
         this.Width = width;
