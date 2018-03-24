@@ -32,6 +32,11 @@ public class World {
         }
         return tiles[x, y];
     }
+
+
+
+
+
     public int Width{
         get{
             return width;

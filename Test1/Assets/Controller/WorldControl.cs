@@ -66,7 +66,15 @@ public class WorldControl : MonoBehaviour {
         int y = Mathf.FloorToInt(coord.y);
         return world.GetTileAt(x, y);
      }
+    public void SetMode_Build()
+    {
 
+    }
+    public void SetMode_Destroy()
+    {
+
+         
+    }
 
     
 }
