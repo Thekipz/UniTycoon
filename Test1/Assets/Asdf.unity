@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 465559786}
   - component: {fileID: 465559785}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: TopUIGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -531,7 +531,7 @@ GameObject:
   - component: {fileID: 1207297459}
   - component: {fileID: 1207297458}
   m_Layer: 5
-  m_Name: Image
+  m_Name: BottomUIGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

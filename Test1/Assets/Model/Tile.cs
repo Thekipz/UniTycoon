@@ -12,12 +12,27 @@ public class Tile {
     Action<Tile> cbTileTypeChanged;
 
 
-
+    /*  Used in conjunction with TileTypeChanged 
+     * in WorldControler to update sprites
+     */
     public void RegisterCallBack(Action<Tile> callback)
     {
         cbTileTypeChanged += callback;
     }
-    public TileType Type
+ 
+    //Tile Constructor
+     public Tile(World world, int x, int y)
+    {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+
+    }
+
+    /*
+     * Mutators for private tile variables
+     */
+     public TileType Type
     {
         get
         {
@@ -31,7 +46,6 @@ public class Tile {
             cbTileTypeChanged(this);
         }
     }
-
     public int X
     {
         get
@@ -48,12 +62,6 @@ public class Tile {
         }
     }
   
-    public Tile(World world, int x, int y)
-    {
-        this.world = world;
-        this.x = x;
-        this.y = y;
-
-    }
+   
 
 }

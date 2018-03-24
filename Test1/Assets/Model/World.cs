@@ -36,7 +36,7 @@ public class World {
 
 
 
-
+    //Mutators
     public int Width{
         get{
             return width;

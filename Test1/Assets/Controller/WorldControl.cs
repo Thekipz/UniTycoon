@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class WorldControl : MonoBehaviour {
 
     public Sprite groundSprite, buildingSprite;
     SpriteRenderer tile_sr;
     World world;
-
+    Vector3 lastFramePosition;
 
 	// Initialize World
 	void Start () {
@@ -47,9 +48,14 @@ public class WorldControl : MonoBehaviour {
     }
     // Update is called once per frame
     void Update() {
-        Vector3 lastFramePosition;
 
-        if (Input.GetMouseButtonDown(0))
+
+        //Checks if there is a UI element in front of a tile on touch, if there is not, then selects the tile
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+        else if (Input.GetMouseButtonDown(0))
         {
             lastFramePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             lastFramePosition.z = 0;
