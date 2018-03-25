@@ -1,42 +1,54 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class WorldControl : MonoBehaviour {
-    public Image popup;
     
-
+    
+    
     public Sprite groundSprite, buildingSprite;
     SpriteRenderer tile_sr;
     World world;
     Vector3 lastFramePosition;
     public enum Mode { Build, Destroy, Play };
     Mode mode = Mode.Play;
+    Dictionary<Tile, GameObject> tileGameObjectMap;
     // Initialize World
     void Start () {
         world = new World();
-       
 
+        tileGameObjectMap = new Dictionary<Tile, GameObject>();
         //Create a display object for all of the tiles
         for (int i = 0; i < world.Width; i++){
             for (int j = 0; j < world.Height; j++){
                 GameObject tile_go = new GameObject();
                 Tile tile_data = world.GetTileAt(i, j);
+                tileGameObjectMap.Add(tile_data, tile_go);
                 tile_go.name = "Tile_" + i + "_" + j;
                 tile_go.transform.position = new Vector3(world.GetTileAt(i, j).X, world.GetTileAt(i, j).Y,0);
                 tile_sr = tile_go.AddComponent<SpriteRenderer>();
                 tile_sr.sprite = groundSprite;
                 tile_go.transform.SetParent(this.transform, true);
                 //This will update the tile sprite when the type is changed
-                tile_data.RegisterCallBack((tile) => { TileTypeChanged(tile, tile_go); });
+                tile_data.RegisterCallBack(TileTypeChanged);
             }
         }     
 	}
     //Function called when a tiletype is changed in order to update the sprite
-    void TileTypeChanged(Tile tile_sr, GameObject tile_go)
+    void TileTypeChanged(Tile tile_sr)
     {
+        if (tileGameObjectMap.ContainsKey(tile_sr) == false)
+        {
+            Debug.LogError("tileGameObject doesnt contain the tile_data");
+            return;
+        }
+        GameObject tile_go = tileGameObjectMap[tile_sr];
+        if(tile_go == null)
+        {
+            Debug.LogError("tileGameObject game object is null");
+            return;
+        }
         if (tile_sr.Type == Tile.TileType.Empty)
         {
             tile_go.GetComponent<SpriteRenderer>().sprite = groundSprite;
