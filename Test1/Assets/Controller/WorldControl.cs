@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+using UnityEngine.UI;
 public class WorldControl : MonoBehaviour {
-    
-    
+
+
+    public Image popup;
     
     public Sprite groundSprite, buildingSprite;
     SpriteRenderer tile_sr;
@@ -78,10 +79,17 @@ public class WorldControl : MonoBehaviour {
 
             //Test line to check mouse select functionality
             Tile select = ClickTile(lastFramePosition);
-            if (this.mode == Mode.Build)
+            if (this.mode == Mode.Build) 
             {
-                select.Type = Tile.TileType.Building;
-                this.mode = Mode.Play;
+                if (select.Type == Tile.TileType.Empty)
+                {
+                    select.Type = Tile.TileType.Building;
+                    this.mode = Mode.Play;
+                } else
+                {
+                    Debug.LogError("The selected tile is not empty");
+                }
+
             } else if (this.mode == Mode.Destroy)
             {
                 
@@ -93,6 +101,7 @@ public class WorldControl : MonoBehaviour {
             {
                 //------------------------------------------------------#TODO: Add popup for building status or w/e
             }
+            
         }
     }
     // Function to get tile at mouse location
@@ -105,6 +114,7 @@ public class WorldControl : MonoBehaviour {
     //Called on "Build" button click
     public void SetMode_Build()
     {
+       // this.popup.enabled = false;
         this.mode = Mode.Build;
     }
     //Called on "Destroy" button click

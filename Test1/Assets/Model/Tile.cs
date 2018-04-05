@@ -17,7 +17,7 @@ public class Tile {
      */
     public void RegisterCallBack(Action<Tile> callback)
     {
-        cbTileTypeChanged += callback;
+        cbTileTypeChanged = callback;
     }
  
     //Tile Constructor
