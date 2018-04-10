@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class WorldControl : MonoBehaviour {
 
 
-    public Image popup;
+   
+    public CanvasGroup uigroup;
     
     public Sprite groundSprite, buildingSprite;
     SpriteRenderer tile_sr;
@@ -15,9 +16,15 @@ public class WorldControl : MonoBehaviour {
     public enum Mode { Build, Destroy, Play };
     Mode mode = Mode.Play;
     Dictionary<Tile, GameObject> tileGameObjectMap;
+    Tile select = null;
+
     // Initialize World
     void Start () {
         world = new World();
+
+        uigroup.alpha = 0;
+        uigroup.blocksRaycasts = false;
+        uigroup.interactable = false;
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
         //Create a display object for all of the tiles
@@ -36,6 +43,8 @@ public class WorldControl : MonoBehaviour {
             }
         }     
 	}
+
+
     //Function called when a tiletype is changed in order to update the sprite
     void TileTypeChanged(Tile tile_sr)
     {
@@ -65,7 +74,7 @@ public class WorldControl : MonoBehaviour {
     }
     // Update is called once per frame
     void Update() {
-
+        
 
         //Checks if there is a UI element in front of a tile on touch, if there is not, then selects the tile
         if (EventSystem.current.IsPointerOverGameObject())
@@ -77,10 +86,11 @@ public class WorldControl : MonoBehaviour {
             lastFramePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             lastFramePosition.z = 0;
 
-            //Test line to check mouse select functionality
-            Tile select = ClickTile(lastFramePosition);
+            
+            select = ClickTile(lastFramePosition);
             if (this.mode == Mode.Build) 
-            {
+            {   
+                //TODO: open build menu
                 if (select.Type == Tile.TileType.Empty)
                 {
                     select.Type = Tile.TileType.Building;
@@ -90,12 +100,14 @@ public class WorldControl : MonoBehaviour {
                     Debug.LogError("The selected tile is not empty");
                 }
 
-            } else if (this.mode == Mode.Destroy)
+            }
+             else if (this.mode == Mode.Destroy)
             {
+
+                uigroup.alpha = 1;
+                uigroup.blocksRaycasts = true;
+                uigroup.interactable = true;
                 
-                //------------------------------------------------------#TODO: Add confirmation popup for destroy
-                select.Type = Tile.TileType.Empty;
-                this.mode = Mode.Play;
             }
             else if (this.mode == Mode.Play)
             {
@@ -114,7 +126,7 @@ public class WorldControl : MonoBehaviour {
     //Called on "Build" button click
     public void SetMode_Build()
     {
-       // this.popup.enabled = false;
+       
         this.mode = Mode.Build;
     }
     //Called on "Destroy" button click
@@ -123,6 +135,23 @@ public class WorldControl : MonoBehaviour {
         this.mode = Mode.Destroy;
          
     }
+    //confirm button for demolish popup
+    public void Confirm_Destroy()
+    {
+        select.Type = Tile.TileType.Empty;
+        this.mode = Mode.Play;
+        uigroup.alpha = 0;
+        uigroup.blocksRaycasts = false;
+        uigroup.interactable = false;
+    }
+    // Cancel button for demolish popup
+    public void Cancel_Destroy()
+    {
+        this.mode = Mode.Play;
+        uigroup.alpha = 0;
+        uigroup.blocksRaycasts = false;
+        uigroup.interactable = false;
+    }
 
-    
+
 }
