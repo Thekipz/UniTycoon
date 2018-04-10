@@ -7,7 +7,7 @@ public class WorldControl : MonoBehaviour {
 
 
    
-    public CanvasGroup uigroup;
+    public CanvasGroup uigroup, buildMenu;
     
     public Sprite groundSprite, buildingSprite;
     SpriteRenderer tile_sr;
@@ -17,7 +17,8 @@ public class WorldControl : MonoBehaviour {
     Mode mode = Mode.Play;
     Dictionary<Tile, GameObject> tileGameObjectMap;
     Tile select = null;
-
+    public enum BuildingType {None, Dorm,Class};
+    BuildingType buildingType = BuildingType.None;
     // Initialize World
     void Start () {
         world = new World();
@@ -25,11 +26,15 @@ public class WorldControl : MonoBehaviour {
         uigroup.alpha = 0;
         uigroup.blocksRaycasts = false;
         uigroup.interactable = false;
+        buildMenu.alpha = 0;
+        buildMenu.blocksRaycasts = false;
+        buildMenu.interactable = false;
+
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
         //Create a display object for all of the tiles
-        for (int i = 0; i < world.Width; i++){
-            for (int j = 0; j < world.Height; j++){
+        for (int i = 0; i < world.Width; i = i + 1){
+            for (int j = 0; j < world.Height; j = j + 1) { 
                 GameObject tile_go = new GameObject();
                 Tile tile_data = world.GetTileAt(i, j);
                 tileGameObjectMap.Add(tile_data, tile_go);
@@ -89,11 +94,20 @@ public class WorldControl : MonoBehaviour {
             
             select = ClickTile(lastFramePosition);
             if (this.mode == Mode.Build) 
-            {   
-                //TODO: open build menu
+            {
+             
+              
                 if (select.Type == Tile.TileType.Empty)
                 {
-                    select.Type = Tile.TileType.Building;
+                    if (this.buildingType == BuildingType.Dorm)
+                    {
+                        select.Type = Tile.TileType.Building;
+                    }else if (this.buildingType == BuildingType.Class)
+                    {
+                        //select.Type = Tile.TileType.Class
+                    }
+
+                    this.buildingType = BuildingType.None;
                     this.mode = Mode.Play;
                 } else
                 {
@@ -103,7 +117,6 @@ public class WorldControl : MonoBehaviour {
             }
              else if (this.mode == Mode.Destroy)
             {
-
                 uigroup.alpha = 1;
                 uigroup.blocksRaycasts = true;
                 uigroup.interactable = true;
@@ -126,7 +139,9 @@ public class WorldControl : MonoBehaviour {
     //Called on "Build" button click
     public void SetMode_Build()
     {
-       
+        buildMenu.alpha = 1;
+        buildMenu.blocksRaycasts = true;
+        buildMenu.interactable = true;
         this.mode = Mode.Build;
     }
     //Called on "Destroy" button click
@@ -145,12 +160,22 @@ public class WorldControl : MonoBehaviour {
         uigroup.interactable = false;
     }
     // Cancel button for demolish popup
-    public void Cancel_Destroy()
+    public void Cancel()
     {
         this.mode = Mode.Play;
         uigroup.alpha = 0;
         uigroup.blocksRaycasts = false;
         uigroup.interactable = false;
+        buildMenu.alpha = 0;
+        buildMenu.blocksRaycasts = false;
+        buildMenu.interactable = false;
+    }
+    public void BuildingSelect(string type)
+    {
+        //this.buildingType = type;
+        buildMenu.alpha = 0;
+        buildMenu.blocksRaycasts = false;
+        buildMenu.interactable = false;
     }
 
 
