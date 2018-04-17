@@ -21,8 +21,8 @@ public class WorldControl : MonoBehaviour {
     BuildingType buildingType = BuildingType.None;
     // Initialize World
     void Start () {
-        world = new World();
-
+        world = new World(60,40,10);
+		int scale = world.Scale;
         uigroup.alpha = 0;
         uigroup.blocksRaycasts = false;
         uigroup.interactable = false;
@@ -39,7 +39,8 @@ public class WorldControl : MonoBehaviour {
                 Tile tile_data = world.GetTileAt(i, j);
                 tileGameObjectMap.Add(tile_data, tile_go);
                 tile_go.name = "Tile_" + i + "_" + j;
-                tile_go.transform.position = new Vector3(world.GetTileAt(i, j).X, world.GetTileAt(i, j).Y,0);
+				tile_go.transform.localScale = new Vector3 (scale,scale,scale);
+                tile_go.transform.position = new Vector3(world.GetTileAt(i, j).X*scale, world.GetTileAt(i, j).Y*scale,0);
                 tile_sr = tile_go.AddComponent<SpriteRenderer>();
                 tile_sr.sprite = groundSprite;
                 tile_go.transform.SetParent(this.transform, true);
@@ -134,7 +135,7 @@ public class WorldControl : MonoBehaviour {
      {
         int x = Mathf.FloorToInt(coord.x);
         int y = Mathf.FloorToInt(coord.y);
-        return world.GetTileAt(x, y);
+		return world.GetTileAt(x/world.Scale, y/world.Scale);
      }
     //Called on "Build" button click
     public void SetMode_Build()

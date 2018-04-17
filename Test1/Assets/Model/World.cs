@@ -7,11 +7,13 @@ public class World {
     Tile[,] tiles;
     int width;
     int height;
+	int scale;
     //Default world constructor, width and height are the number of tiles on map
-    public World(int width = 20, int height = 20)
+	public World(int width = 20, int height = 20, int scale=1)
     {
         this.Width = width;
         this.Height = height;
+		this.Scale = scale;
 
         tiles = new Tile[width, height];
 
@@ -25,7 +27,7 @@ public class World {
 
     public Tile GetTileAt(int x, int y)
     {
-        if (x > width || x < 0 || y > height || y < 0)
+        if (x > scale*width || x < 0 || y > scale*height || y < 0)
         {
             Debug.LogError("Tile ("+x+","+ y+") is out of range.");
             return null;
@@ -55,4 +57,12 @@ public class World {
         }
     }
   
+	public int Scale{
+		get{
+			return scale;
+		}
+		set{
+			scale = value;
+		}
+	}
 }
