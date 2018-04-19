@@ -21,7 +21,7 @@ public class WorldControl : MonoBehaviour {
     BuildingType buildingType = BuildingType.None;
     // Initialize World
     void Start () {
-        world = new World(60,40,10);
+        world = new World(30,15,20);
 		int scale = world.Scale;
         uigroup.alpha = 0;
         uigroup.blocksRaycasts = false;
@@ -92,8 +92,8 @@ public class WorldControl : MonoBehaviour {
             lastFramePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             lastFramePosition.z = 0;
 
-            
             select = ClickTile(lastFramePosition);
+			Debug.Log ("Mouse clicked at X:"+select.X+", Y: "+select.Y);
             if (this.mode == Mode.Build) 
             {
              
@@ -103,6 +103,7 @@ public class WorldControl : MonoBehaviour {
                     if (this.buildingType == BuildingType.Dorm)
                     {
                         select.Type = Tile.TileType.Building;
+						Debug.Log ("Dorm placed at X:"+select.X+", Y: "+select.Y);
                     }else if (this.buildingType == BuildingType.Class)
                     {
                         //select.Type = Tile.TileType.Class
@@ -173,7 +174,14 @@ public class WorldControl : MonoBehaviour {
     }
     public void BuildingSelect(string type)
     {
-        //this.buildingType = type;
+		/**/
+		switch (type) {
+		case "Dorm":
+			this.buildingType = BuildingType.Dorm;
+			break;
+		}
+
+		//Debug.Log (type);
         buildMenu.alpha = 0;
         buildMenu.blocksRaycasts = false;
         buildMenu.interactable = false;
