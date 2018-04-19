@@ -135,8 +135,9 @@ public class WorldControl : MonoBehaviour {
      {
         int x = Mathf.FloorToInt(coord.x);
         int y = Mathf.FloorToInt(coord.y);
-		return world.GetTileAt(x/world.Scale, y/world.Scale);
-     }
+       
+        return world.GetTileAt(x/world.Scale, y/world.Scale);
+    }
     //Called on "Build" button click
     public void SetMode_Build()
     {
@@ -171,9 +172,12 @@ public class WorldControl : MonoBehaviour {
         buildMenu.blocksRaycasts = false;
         buildMenu.interactable = false;
     }
-    public void BuildingSelect(string type)
+    public void BuildingSelect(int type)
     {
-        //this.buildingType = type;
+        if (type != 1000)
+        {
+            this.buildingType = BuildingType.Dorm;
+        }
         buildMenu.alpha = 0;
         buildMenu.blocksRaycasts = false;
         buildMenu.interactable = false;
