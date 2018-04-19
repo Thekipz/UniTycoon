@@ -9,7 +9,7 @@ public class WorldControl : MonoBehaviour {
    
     public CanvasGroup uigroup, buildMenu;
     
-    public Sprite groundSprite, buildingSprite;
+    public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
     SpriteRenderer tile_sr;
     World world;
     Vector3 lastFramePosition;
@@ -17,10 +17,11 @@ public class WorldControl : MonoBehaviour {
     Mode mode = Mode.Play;
     Dictionary<Tile, GameObject> tileGameObjectMap;
     Tile select = null;
-    public enum BuildingType {None, Dorm,Class};
+    public enum BuildingType {None, Dorm,Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin};
     BuildingType buildingType = BuildingType.None;
     // Initialize World
     void Start () {
+
         world = new World(30,15,20);
 		int scale = world.Scale;
         uigroup.alpha = 0;
@@ -60,11 +61,15 @@ public class WorldControl : MonoBehaviour {
             return;
         }
         GameObject tile_go = tileGameObjectMap[tile_sr];
+
         if(tile_go == null)
         {
             Debug.LogError("tileGameObject game object is null");
             return;
         }
+        /*
+         * Replaced with switch statement below
+         * 
         if (tile_sr.Type == Tile.TileType.Empty)
         {
             tile_go.GetComponent<SpriteRenderer>().sprite = groundSprite;
@@ -76,6 +81,43 @@ public class WorldControl : MonoBehaviour {
         else
         {
             Debug.LogError("TileTypeChanged - Unrecognized Tile Type.");
+        }
+        */
+        switch (tile_sr.Type)
+        {
+            case Tile.TileType.Empty:
+                tile_go.GetComponent<SpriteRenderer>().sprite = groundSprite;
+                break;
+            case Tile.TileType.Building:
+                tile_go.GetComponent<SpriteRenderer>().sprite = buildingSprite;
+                break;
+            case Tile.TileType.Class:
+                tile_go.GetComponent<SpriteRenderer>().sprite = classSprite;
+                break;
+            case Tile.TileType.Gym:
+                tile_go.GetComponent<SpriteRenderer>().sprite = gymSprite;
+                break;
+            case Tile.TileType.Lab:
+                tile_go.GetComponent<SpriteRenderer>().sprite = labSprite;
+                break;
+            case Tile.TileType.Cafe:
+                tile_go.GetComponent<SpriteRenderer>().sprite = cafeSprite;
+                break;
+            case Tile.TileType.Library:
+                tile_go.GetComponent<SpriteRenderer>().sprite = librarySprite;
+                break;
+            case Tile.TileType.Parking:
+                tile_go.GetComponent<SpriteRenderer>().sprite = parkingSprite;
+                break;
+            case Tile.TileType.Stadium:
+                tile_go.GetComponent<SpriteRenderer>().sprite = stadiumSprite;
+                break;
+            case Tile.TileType.Admin:
+                tile_go.GetComponent<SpriteRenderer>().sprite = adminSprite;
+                break;
+            default:
+                Debug.LogError("TileTypeChanged - Unrecognized Tile Type.");
+                break;
         }
     }
     // Update is called once per frame
@@ -96,18 +138,48 @@ public class WorldControl : MonoBehaviour {
 			Debug.Log ("Mouse clicked at X:"+select.X+", Y: "+select.Y);
             if (this.mode == Mode.Build) 
             {
-             
-              
                 if (select.Type == Tile.TileType.Empty)
                 {
-                    if (this.buildingType == BuildingType.Dorm)
+                    switch (this.buildingType)
                     {
-                        select.Type = Tile.TileType.Building;
-						Debug.Log ("Dorm placed at X:"+select.X+", Y: "+select.Y);
-                    }else if (this.buildingType == BuildingType.Class)
-                    {
-                        //select.Type = Tile.TileType.Class
+                        case BuildingType.Dorm:
+                            select.Type = Tile.TileType.Building;
+                            Debug.Log("Dorm placed at X:" + select.X + ", Y: " + select.Y);
+                            break;
+                        case BuildingType.Class:
+                            select.Type = Tile.TileType.Class;
+                            Debug.Log("Class placed at X:" + select.X + ", Y: " + select.Y);
+                            break;
+                        case BuildingType.Gym:
+                            select.Type = Tile.TileType.Gym;
+                            Debug.Log("Gym placed at X:" + select.X + ", Y: " + select.Y);
+                            break;
+                        case BuildingType.Library:
+                            select.Type = Tile.TileType.Library;
+                            Debug.Log("Library placed at X:" + select.X + ", Y: " + select.Y);
+                            break;
+                        case BuildingType.Cafe:
+                            select.Type = Tile.TileType.Cafe;
+                            Debug.Log("Cafe placed at X:" + select.X + ", Y: " + select.Y);
+                            break;
+                        case BuildingType.Admin:
+                            select.Type = Tile.TileType.Admin;
+                            Debug.Log("Admin placed at X:" + select.X + ", Y: " + select.Y);
+                            break;
+                        case BuildingType.Stadium:
+                            select.Type = Tile.TileType.Stadium;
+                            Debug.Log("Stadium placed at X:" + select.X + ", Y: " + select.Y);
+                            break;
+                        case BuildingType.Parking:
+                            select.Type = Tile.TileType.Parking;
+                            Debug.Log("Parking placed at X:" + select.X + ", Y: " + select.Y);
+                            break;
+                        case BuildingType.Lab:
+                            select.Type = Tile.TileType.Lab;
+                            Debug.Log("Lab placed at X:" + select.X + ", Y: " + select.Y);
+                            break;
                     }
+                }
 
                     this.buildingType = BuildingType.None;
                     this.mode = Mode.Play;
@@ -129,8 +201,7 @@ public class WorldControl : MonoBehaviour {
                 //------------------------------------------------------#TODO: Add popup for building status or w/e
             }
             
-        }
-    }
+          }
     // Function to get tile at mouse location
     Tile ClickTile(Vector3 coord)
      {
@@ -175,22 +246,43 @@ public class WorldControl : MonoBehaviour {
     }
     public void BuildingSelect(int type)
     {
-		/*
-		switch (type) {
-		case "Dorm":
-			this.buildingType = BuildingType.Dorm;
-			break;
-		}
-		*/
-		//Debug.Log (type);
-        if (type != 1000)
+        switch (type)
         {
-            this.buildingType = BuildingType.Dorm;
+            case 1:
+                this.buildingType = BuildingType.Dorm;
+                break;
+            case 2:
+                this.buildingType = BuildingType.Class;
+                break;
+            case 3:
+                this.buildingType = BuildingType.Gym;
+                break;
+            case 4:
+                this.buildingType = BuildingType.Library;
+                break;
+            case 5:
+                this.buildingType = BuildingType.Cafe;
+                break;
+            case 6:
+                this.buildingType = BuildingType.Admin;
+                break;
+            case 7:
+                this.buildingType = BuildingType.Stadium;
+                break;
+            case 8:
+                this.buildingType = BuildingType.Parking;
+                break;
+            case 9:
+                this.buildingType = BuildingType.Lab;
+                break;
+            default:
+                this.buildingType = BuildingType.None;
+                break;
         }
+
+
         buildMenu.alpha = 0;
         buildMenu.blocksRaycasts = false;
         buildMenu.interactable = false;
     }
-
-
 }
