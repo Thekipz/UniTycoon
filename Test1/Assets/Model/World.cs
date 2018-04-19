@@ -32,6 +32,7 @@ public class World {
             Debug.LogError("Tile ("+x+","+ y+") is out of range.");
             return null;
         }
+        Debug.Log("Tile (" + x + "," + y + ")");
         return tiles[x, y];
     }
 
