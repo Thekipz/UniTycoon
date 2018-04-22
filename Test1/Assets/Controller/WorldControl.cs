@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public class WorldControl : MonoBehaviour {
 
 
-   
+    public Text text_money;
+    int money = 0;
     public CanvasGroup uigroup, buildMenu;
-    
+    public float elapsed = 0f;
     public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
     SpriteRenderer tile_sr;
     World world;
@@ -17,13 +18,13 @@ public class WorldControl : MonoBehaviour {
     Mode mode = Mode.Play;
     Dictionary<Tile, GameObject> tileGameObjectMap;
     Tile select = null;
-    public enum BuildingType {None, Dorm,Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin};
+    public enum BuildingType { None, Dorm, Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin };
     BuildingType buildingType = BuildingType.None;
     // Initialize World
-    void Start () {
-
-        world = new World(10,10,35);
-		int scale = world.Scale;
+    void Start() {
+        text_money.text = "Money: $" + money.ToString();
+        world = new World(10, 10, 35);
+        int scale = world.Scale;
         uigroup.alpha = 0;
         uigroup.blocksRaycasts = false;
         uigroup.interactable = false;
@@ -34,22 +35,22 @@ public class WorldControl : MonoBehaviour {
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
         //Create a display object for all of the tiles
-        for (int i = 0; i < world.Width; i = i + 1){
-            for (int j = 0; j < world.Height; j = j + 1) { 
+        for (int i = 0; i < world.Width; i = i + 1) {
+            for (int j = 0; j < world.Height; j = j + 1) {
                 GameObject tile_go = new GameObject();
                 Tile tile_data = world.GetTileAt(i, j);
                 tileGameObjectMap.Add(tile_data, tile_go);
                 tile_go.name = "Tile_" + i + "_" + j;
-				tile_go.transform.localScale = new Vector3 (scale,scale,scale);
-                tile_go.transform.position = new Vector3(world.GetTileAt(i, j).X*scale, world.GetTileAt(i, j).Y*scale,0);
+                tile_go.transform.localScale = new Vector3(scale, scale, scale);
+                tile_go.transform.position = new Vector3(world.GetTileAt(i, j).X * scale, world.GetTileAt(i, j).Y * scale, 0);
                 tile_sr = tile_go.AddComponent<SpriteRenderer>();
                 tile_sr.sprite = groundSprite;
                 tile_go.transform.SetParent(this.transform, true);
                 //This will update the tile sprite when the type is changed
                 tile_data.RegisterCallBack(TileTypeChanged);
             }
-        }     
-	}
+        }
+    }
 
 
     //Function called when a tiletype is changed in order to update the sprite
@@ -62,7 +63,7 @@ public class WorldControl : MonoBehaviour {
         }
         GameObject tile_go = tileGameObjectMap[tile_sr];
 
-        if(tile_go == null)
+        if (tile_go == null)
         {
             Debug.LogError("tileGameObject game object is null");
             return;
@@ -120,10 +121,17 @@ public class WorldControl : MonoBehaviour {
                 break;
         }
     }
+
     // Update is called once per frame
     void Update() {
-        
 
+        elapsed += Time.deltaTime;
+        if(elapsed >= 2f)
+        {
+            elapsed = elapsed % 2f;
+            money++;
+            text_money.text = "Money: $" + money.ToString();
+        }
         //Checks if there is a UI element in front of a tile on touch, if there is not, then selects the tile
         if (EventSystem.current.IsPointerOverGameObject())
         {
@@ -135,8 +143,8 @@ public class WorldControl : MonoBehaviour {
             lastFramePosition.z = 0;
 
             select = ClickTile(lastFramePosition);
-			Debug.Log ("Mouse clicked at X:"+select.X+", Y: "+select.Y);
-            if (this.mode == Mode.Build) 
+            Debug.Log("Mouse clicked at X:" + select.X + ", Y: " + select.Y);
+            if (this.mode == Mode.Build)
             {
                 if (select.Type == Tile.TileType.Empty)
                 {
@@ -181,27 +189,28 @@ public class WorldControl : MonoBehaviour {
                     }
                 }
 
-                    this.buildingType = BuildingType.None;
-                    this.mode = Mode.Play;
-                } else
-                {
-                    Debug.LogError("The selected tile is not empty");
-                }
-
-            }
-             else if (this.mode == Mode.Destroy)
+                this.buildingType = BuildingType.None;
+                this.mode = Mode.Play;
+            } else
             {
-                uigroup.alpha = 1;
-                uigroup.blocksRaycasts = true;
-                uigroup.interactable = true;
-                
+                Debug.LogError("The selected tile is not empty");
             }
+
+            if (this.mode == Mode.Destroy)
+        {
+            uigroup.alpha = 1;
+            uigroup.blocksRaycasts = true;
+            uigroup.interactable = true;
+        }
             else if (this.mode == Mode.Play)
             {
                 //------------------------------------------------------#TODO: Add popup for building status or w/e
             }
+        }
+        
             
           }
+
     // Function to get tile at mouse location
     Tile ClickTile(Vector3 coord)
      {
@@ -285,4 +294,5 @@ public class WorldControl : MonoBehaviour {
         buildMenu.blocksRaycasts = false;
         buildMenu.interactable = false;
     }
+
 }
