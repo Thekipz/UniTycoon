@@ -9,7 +9,7 @@ public class World {
     int height;
 	int scale;
     //Default world constructor, width and height are the number of tiles on map
-	public World(int width = 20, int height = 20, int scale=1)
+	public World(int width = 10, int height = 10, int scale=1)
     {
         this.Width = width;
         this.Height = height;

@@ -22,7 +22,7 @@ public class WorldControl : MonoBehaviour {
     // Initialize World
     void Start () {
 
-        world = new World(30,15,20);
+        world = new World(10,10,35);
 		int scale = world.Scale;
         uigroup.alpha = 0;
         uigroup.blocksRaycasts = false;
