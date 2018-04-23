@@ -68,22 +68,7 @@ public class WorldControl : MonoBehaviour {
             Debug.LogError("tileGameObject game object is null");
             return;
         }
-        /*
-         * Replaced with switch statement below
-         * 
-        if (tile_sr.Type == Tile.TileType.Empty)
-        {
-            tile_go.GetComponent<SpriteRenderer>().sprite = groundSprite;
-        }
-        else if (tile_sr.Type == Tile.TileType.Building)
-        {
-            tile_go.GetComponent<SpriteRenderer>().sprite = buildingSprite;
-        }
-        else
-        {
-            Debug.LogError("TileTypeChanged - Unrecognized Tile Type.");
-        }
-        */
+  
         switch (tile_sr.Type)
         {
             case Tile.TileType.Empty:
