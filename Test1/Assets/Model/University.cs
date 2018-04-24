@@ -22,9 +22,9 @@ public class University
 	double amenitiesQuantifier;
 
 	int residentCapacity;
-	int residentPopulation;//-------population of rent payers
+	double residentPopulation;//-------population of rent payers
 	int studentCapacity;
-	int studentPopulation;//--------population of tuition payers
+	double studentPopulation;//--------population of tuition payers
 	int activeAlumPopulation;//-----population of donating alums (grows as notoriety grows)
 
 	double studentGrowthFactor;
@@ -55,7 +55,7 @@ public class University
 		EASY_MOD = 1.5;
 		NORM_MOD = 1.0;
 		HARD_MOD = 0.6;
-		MONTH = 1000;
+		MONTH = 100;
 		YEAR = 12 * MONTH;
 
 		double START_COFFERS = 100000.00;
@@ -76,13 +76,13 @@ public class University
 		//academicBldgsQuality = 0;
 
 		residentCapacity = 0;
-		residentPopulation = 0;
+		residentPopulation = 2;
 		studentCapacity = 0;
-		studentPopulation = 0;
+		studentPopulation = 2;
 		activeAlumPopulation = 0;
 
-		studentGrowthRate = 0.01 / MONTH;
-		residentGrowthRate = 0.01 / MONTH;
+		studentGrowthRate = 0.5 / MONTH;
+		residentGrowthRate = 0.5 / MONTH;
 		tuitionRate = 10000 / YEAR;
 		rentRate = 500 / MONTH;
 		scholarshipAllocation = 0;
@@ -102,12 +102,12 @@ public class University
 		if (studentCapacity != 0) {
 			studentGrowthFactor = studentGrowthRate * studentPopulation * ((studentCapacity - studentPopulation) / studentCapacity);
 		}
-		studentPopulation = studentPopulation + (int)(studentPopulation * studentGrowthFactor);
+		studentPopulation = studentPopulation + (studentPopulation * studentGrowthFactor);
 		if (residentCapacity != 0) {
 			residentGrowthFactor = residentGrowthRate * residentPopulation * ((residentCapacity - residentPopulation) / residentCapacity);
 		}
-		residentPopulation = residentPopulation + (int)(residentPopulation * residentGrowthFactor);
-		coffers = coffers + tuitionRate * studentPopulation + rentRate * residentCapacity - scholarshipAllocation / YEAR - grantAllocation / YEAR;
+		residentPopulation = residentPopulation + (residentPopulation * residentGrowthFactor);
+		coffers = coffers + (tuitionRate * studentPopulation) + (rentRate * residentPopulation) - (scholarshipAllocation / YEAR) - (grantAllocation / YEAR);
 
 		switch(difficulty)
 		{
@@ -120,20 +120,21 @@ public class University
 		case GameDifficulty.Hard:
 			coffers = coffers + activeAlumPopulation * 0.01 / MONTH;
 			break;
-		}	
+		}
+		Debug.Log ("Stud pop/cap: "+studentPopulation.ToString()+"/"+studentCapacity.ToString()+"   Res pop/cap: "+residentPopulation.ToString()+"/"+residentCapacity.ToString()+"    coffers: "+coffers.ToString());
 	}
 
 	public string moneyToString()
 	{
-		return coffers.ToString();
+		return Coffers.ToString();
 	}
 
 //MUTATORS
 
-	public double Coffers
+	public int Coffers
 	{
 		get{ 
-			return coffers;	
+			return (int)coffers;	
 		}
 	}
 }

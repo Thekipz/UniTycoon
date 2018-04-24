@@ -20,6 +20,17 @@ public class WorldControl : MonoBehaviour {
     public enum BuildingType { None, Dorm, Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin };
 	University university;
     BuildingType buildingType = BuildingType.None;
+
+	public void hideCG(CanvasGroup cg){
+		cg.alpha = 0;
+		cg.blocksRaycasts = false;
+		cg.interactable = false;
+	}
+	public void showCG(CanvasGroup cg){
+		cg.alpha = 1;
+		cg.blocksRaycasts = true;
+		cg.interactable = true;
+	}
     // Initialize World
     void Start() {
 		Debug.Log ("Start...");
@@ -28,18 +39,10 @@ public class WorldControl : MonoBehaviour {
         text_money.text = "Money: $" + university.moneyToString();
         world = new World(10, 10, 35);
         int scale = world.Scale;
-        uigrouptop.alpha = 0;
-        uigrouptop.blocksRaycasts = false;
-        uigrouptop.interactable = false;
-		uigroupbottom.alpha = 1;
-		uigroupbottom.blocksRaycasts = true;
-		uigroupbottom.interactable = true;
-        buildMenu.alpha = 0;
-        buildMenu.blocksRaycasts = false;
-        buildMenu.interactable = false;
-		popup.alpha = 0;
-		popup.blocksRaycasts = false;
-		popup.interactable = false;
+		hideCG (uigrouptop);
+		showCG (uigroupbottom);
+		hideCG (buildMenu);
+		hideCG (popup);
 
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
@@ -82,52 +85,65 @@ public class WorldControl : MonoBehaviour {
         {
 			case Tile.TileType.Empty:
 				tile_go.GetComponent<SpriteRenderer> ().sprite = groundSprite;
-				tile_sr.StudentCapacity = 0;
-				tile_sr.ResidentCapacity = 0;
+				//tile_sr.StudentCapacity = 0;
+				//tile_sr.ResidentCapacity = 0;
                 break;
-            case Tile.TileType.Building:
-                tile_go.GetComponent<SpriteRenderer>().sprite = buildingSprite;
-				tile_sr.StudentCapacity = 0;
-				tile_sr.ResidentCapacity = 500;
+			case Tile.TileType.Building:
+				tile_go.GetComponent<SpriteRenderer> ().sprite = buildingSprite;
+				//tile_sr.StudentCapacity = 0;
+				//tile_sr.ResidentCapacity = 500;
+				world.addResidentCapacity (500);
                 break;
             case Tile.TileType.Class:
                 tile_go.GetComponent<SpriteRenderer>().sprite = classSprite;
-				tile_sr.StudentCapacity = 200;
-				tile_sr.ResidentCapacity = 0;
+				//tile_sr.StudentCapacity = 200;
+				//tile_sr.ResidentCapacity = 0;
+				world.addStudentCapacity(200);
                 break;
-            case Tile.TileType.Gym:
-                tile_go.GetComponent<SpriteRenderer>().sprite = gymSprite;
-				tile_sr.StudentCapacity = 250;
-				tile_sr.ResidentCapacity = 50;
-                break;
+			case Tile.TileType.Gym:
+				tile_go.GetComponent<SpriteRenderer> ().sprite = gymSprite;
+				//tile_sr.StudentCapacity = 250;
+				//tile_sr.ResidentCapacity = 50;
+				world.addStudentCapacity (250);
+				world.addResidentCapacity (50);
+				break;
             case Tile.TileType.Lab:
                 tile_go.GetComponent<SpriteRenderer>().sprite = labSprite;
-				tile_sr.StudentCapacity = 250;
-				tile_sr.ResidentCapacity = 50;
+				//tile_sr.StudentCapacity = 250;
+				//tile_sr.ResidentCapacity = 50;
+				world.addStudentCapacity (250);
+				world.addResidentCapacity (50);
                 break;
             case Tile.TileType.Cafe:
                 tile_go.GetComponent<SpriteRenderer>().sprite = cafeSprite;
-				tile_sr.StudentCapacity = 0;
-				tile_sr.ResidentCapacity = 50;
+				//tile_sr.StudentCapacity = 0;
+				//tile_sr.ResidentCapacity = 50;
+				world.addResidentCapacity (50);
                 break;
             case Tile.TileType.Library:
                 tile_go.GetComponent<SpriteRenderer>().sprite = librarySprite;
-				tile_sr.StudentCapacity = 500;
-				tile_sr.ResidentCapacity = 50;
+				//tile_sr.StudentCapacity = 500;
+				//tile_sr.ResidentCapacity = 50;
+				world.addStudentCapacity (500);
+				world.addResidentCapacity (50);
                 break;
             case Tile.TileType.Parking:
                 tile_go.GetComponent<SpriteRenderer>().sprite = parkingSprite;
                 break;
             case Tile.TileType.Stadium:
                 tile_go.GetComponent<SpriteRenderer>().sprite = stadiumSprite;
-				tile_sr.StudentCapacity = 1000;
-				tile_sr.ResidentCapacity = 100;
-                break;
+				//tile_sr.StudentCapacity = 1000;
+				//tile_sr.ResidentCapacity = 100;
+				world.addStudentCapacity (1000);
+				world.addResidentCapacity (100);
+				break;
             case Tile.TileType.Admin:
                 tile_go.GetComponent<SpriteRenderer>().sprite = adminSprite;
-				tile_sr.StudentCapacity = 100;
-				tile_sr.ResidentCapacity = 10;
-                break;
+				//tile_sr.StudentCapacity = 100;
+				//tile_sr.ResidentCapacity = 10;
+				world.addStudentCapacity (100);
+				world.addResidentCapacity (10);
+				break;
             default:
                 Debug.LogError("TileTypeChanged - Unrecognized Tile Type.");
                 break;
@@ -211,15 +227,9 @@ public class WorldControl : MonoBehaviour {
 
             if (this.mode == Mode.Destroy)
         {
-            uigrouptop.alpha = 1;
-            uigrouptop.blocksRaycasts = true;
-            uigrouptop.interactable = true;
-			uigroupbottom.alpha = 1;
-			uigroupbottom.blocksRaycasts = true;
-			uigroupbottom.interactable = true;
-			popup.alpha = 1;
-			popup.blocksRaycasts = true;
-			popup.interactable = true;
+			showCG (uigrouptop);
+			showCG (uigroupbottom);
+			showCG (popup);
         }
             else if (this.mode == Mode.Play)
             {
@@ -241,9 +251,7 @@ public class WorldControl : MonoBehaviour {
     //Called on "Build" button click
     public void SetMode_Build()
     {
-        buildMenu.alpha = 1;
-        buildMenu.blocksRaycasts = true;
-        buildMenu.interactable = true;
+		showCG (buildMenu);
         this.mode = Mode.Build;
     }
     //Called on "Destroy" button click
@@ -257,29 +265,17 @@ public class WorldControl : MonoBehaviour {
     {
         select.Type = Tile.TileType.Empty;
         this.mode = Mode.Play;
-        uigrouptop.alpha = 0;
-        uigrouptop.blocksRaycasts = false;
-        uigrouptop.interactable = false;
-		uigroupbottom.alpha = 0;
-		uigroupbottom.blocksRaycasts = false;
-		uigroupbottom.interactable = false;
-		popup.alpha = 0;
-		popup.blocksRaycasts = false;
-		popup.interactable = false;
+		hideCG (uigrouptop);
+		hideCG (uigroupbottom);
+		hideCG (popup);
     }
     // Cancel button for demolish popup
     public void Cancel()
     {
         this.mode = Mode.Play;
-        uigrouptop.alpha = 0;
-        uigrouptop.blocksRaycasts = false;
-        uigrouptop.interactable = false;
-		uigroupbottom.alpha = 0;
-		uigroupbottom.blocksRaycasts = false;
-		uigroupbottom.interactable = false;
-        buildMenu.alpha = 0;
-        buildMenu.blocksRaycasts = false;
-        buildMenu.interactable = false;
+		hideCG (uigrouptop);
+		hideCG (uigroupbottom);
+		hideCG (buildMenu);
     }
     public void BuildingSelect(int type)
     {
@@ -318,9 +314,8 @@ public class WorldControl : MonoBehaviour {
         }
 
 
-        buildMenu.alpha = 0;
-        buildMenu.blocksRaycasts = false;
-        buildMenu.interactable = false;
+       
+		hideCG (buildMenu);
     }
 
 }

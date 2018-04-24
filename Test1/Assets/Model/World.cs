@@ -5,11 +5,8 @@ using UnityEngine;
 public class World {
 
     Tile[,] tiles;
-    int width;
-    int height;
-	int scale;
-	int totalStudentCapacity;
-	int totalResidentCapacity;
+    int width,height,scale;
+	int totalStudentCapacity,totalResidentCapacity;
     //Default world constructor, width and height are the number of tiles on map
 	//scale changes the size of tiles
 	public World(int width = 10, int height = 10, int scale=1)
