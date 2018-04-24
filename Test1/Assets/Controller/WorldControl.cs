@@ -7,8 +7,7 @@ public class WorldControl : MonoBehaviour {
 
 
     public Text text_money;
-    int money = 0;
-    public CanvasGroup uigroup, buildMenu;
+    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup;
     public float elapsed = 0f;
     public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
     SpriteRenderer tile_sr;
@@ -19,18 +18,28 @@ public class WorldControl : MonoBehaviour {
     Dictionary<Tile, GameObject> tileGameObjectMap;
     Tile select = null;
     public enum BuildingType { None, Dorm, Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin };
+	University university;
     BuildingType buildingType = BuildingType.None;
     // Initialize World
     void Start() {
-        text_money.text = "Money: $" + money.ToString();
+		Debug.Log ("Start...");
+		GameDifficulty gamediff = GameDifficulty.Normal;
+		university = new University (gamediff);
+        text_money.text = "Money: $" + university.moneyToString();
         world = new World(10, 10, 35);
         int scale = world.Scale;
-        uigroup.alpha = 0;
-        uigroup.blocksRaycasts = false;
-        uigroup.interactable = false;
+        uigrouptop.alpha = 0;
+        uigrouptop.blocksRaycasts = false;
+        uigrouptop.interactable = false;
+		uigroupbottom.alpha = 1;
+		uigroupbottom.blocksRaycasts = true;
+		uigroupbottom.interactable = true;
         buildMenu.alpha = 0;
         buildMenu.blocksRaycasts = false;
         buildMenu.interactable = false;
+		popup.alpha = 0;
+		popup.blocksRaycasts = false;
+		popup.interactable = false;
 
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
@@ -71,35 +80,53 @@ public class WorldControl : MonoBehaviour {
   
         switch (tile_sr.Type)
         {
-            case Tile.TileType.Empty:
-                tile_go.GetComponent<SpriteRenderer>().sprite = groundSprite;
+			case Tile.TileType.Empty:
+				tile_go.GetComponent<SpriteRenderer> ().sprite = groundSprite;
+				tile_sr.StudentCapacity = 0;
+				tile_sr.ResidentCapacity = 0;
                 break;
             case Tile.TileType.Building:
                 tile_go.GetComponent<SpriteRenderer>().sprite = buildingSprite;
+				tile_sr.StudentCapacity = 0;
+				tile_sr.ResidentCapacity = 500;
                 break;
             case Tile.TileType.Class:
                 tile_go.GetComponent<SpriteRenderer>().sprite = classSprite;
+				tile_sr.StudentCapacity = 200;
+				tile_sr.ResidentCapacity = 0;
                 break;
             case Tile.TileType.Gym:
                 tile_go.GetComponent<SpriteRenderer>().sprite = gymSprite;
+				tile_sr.StudentCapacity = 250;
+				tile_sr.ResidentCapacity = 50;
                 break;
             case Tile.TileType.Lab:
                 tile_go.GetComponent<SpriteRenderer>().sprite = labSprite;
+				tile_sr.StudentCapacity = 250;
+				tile_sr.ResidentCapacity = 50;
                 break;
             case Tile.TileType.Cafe:
                 tile_go.GetComponent<SpriteRenderer>().sprite = cafeSprite;
+				tile_sr.StudentCapacity = 0;
+				tile_sr.ResidentCapacity = 50;
                 break;
             case Tile.TileType.Library:
                 tile_go.GetComponent<SpriteRenderer>().sprite = librarySprite;
+				tile_sr.StudentCapacity = 500;
+				tile_sr.ResidentCapacity = 50;
                 break;
             case Tile.TileType.Parking:
                 tile_go.GetComponent<SpriteRenderer>().sprite = parkingSprite;
                 break;
             case Tile.TileType.Stadium:
                 tile_go.GetComponent<SpriteRenderer>().sprite = stadiumSprite;
+				tile_sr.StudentCapacity = 1000;
+				tile_sr.ResidentCapacity = 100;
                 break;
             case Tile.TileType.Admin:
                 tile_go.GetComponent<SpriteRenderer>().sprite = adminSprite;
+				tile_sr.StudentCapacity = 100;
+				tile_sr.ResidentCapacity = 10;
                 break;
             default:
                 Debug.LogError("TileTypeChanged - Unrecognized Tile Type.");
@@ -114,8 +141,8 @@ public class WorldControl : MonoBehaviour {
         if(elapsed >= 2f)
         {
             elapsed = elapsed % 2f;
-            money++;
-            text_money.text = "Money: $" + money.ToString();
+			university.updateUniversityVars (world);
+            text_money.text = "Money: $" + university.moneyToString();
         }
         //Checks if there is a UI element in front of a tile on touch, if there is not, then selects the tile
         if (EventSystem.current.IsPointerOverGameObject())
@@ -126,8 +153,9 @@ public class WorldControl : MonoBehaviour {
         {
             lastFramePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             lastFramePosition.z = 0;
-
             select = ClickTile(lastFramePosition);
+			if (select == null)
+				return;
             Debug.Log("Mouse clicked at X:" + select.X + ", Y: " + select.Y);
             if (this.mode == Mode.Build)
             {
@@ -183,9 +211,15 @@ public class WorldControl : MonoBehaviour {
 
             if (this.mode == Mode.Destroy)
         {
-            uigroup.alpha = 1;
-            uigroup.blocksRaycasts = true;
-            uigroup.interactable = true;
+            uigrouptop.alpha = 1;
+            uigrouptop.blocksRaycasts = true;
+            uigrouptop.interactable = true;
+			uigroupbottom.alpha = 1;
+			uigroupbottom.blocksRaycasts = true;
+			uigroupbottom.interactable = true;
+			popup.alpha = 1;
+			popup.blocksRaycasts = true;
+			popup.interactable = true;
         }
             else if (this.mode == Mode.Play)
             {
@@ -223,17 +257,26 @@ public class WorldControl : MonoBehaviour {
     {
         select.Type = Tile.TileType.Empty;
         this.mode = Mode.Play;
-        uigroup.alpha = 0;
-        uigroup.blocksRaycasts = false;
-        uigroup.interactable = false;
+        uigrouptop.alpha = 0;
+        uigrouptop.blocksRaycasts = false;
+        uigrouptop.interactable = false;
+		uigroupbottom.alpha = 0;
+		uigroupbottom.blocksRaycasts = false;
+		uigroupbottom.interactable = false;
+		popup.alpha = 0;
+		popup.blocksRaycasts = false;
+		popup.interactable = false;
     }
     // Cancel button for demolish popup
     public void Cancel()
     {
         this.mode = Mode.Play;
-        uigroup.alpha = 0;
-        uigroup.blocksRaycasts = false;
-        uigroup.interactable = false;
+        uigrouptop.alpha = 0;
+        uigrouptop.blocksRaycasts = false;
+        uigrouptop.interactable = false;
+		uigroupbottom.alpha = 0;
+		uigroupbottom.blocksRaycasts = false;
+		uigroupbottom.interactable = false;
         buildMenu.alpha = 0;
         buildMenu.blocksRaycasts = false;
         buildMenu.interactable = false;

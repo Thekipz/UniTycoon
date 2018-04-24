@@ -9,6 +9,7 @@ public class Tile {
     TileType type = TileType.Empty;
     World world;
     int x, y;
+	int studentCapacity,residentCapacity;
     Action<Tile> cbTileTypeChanged;
 
 
@@ -26,7 +27,8 @@ public class Tile {
         this.world = world;
         this.x = x;
         this.y = y;
-
+		studentCapacity = 0;
+		residentCapacity = 0;
     }
 
     /*
@@ -61,7 +63,28 @@ public class Tile {
             return y;
         }
     }
-  
-   
+	public int StudentCapacity
+	{
+		get{ 
+			return studentCapacity;
+		}
+		set{
+			world.addStudentCapacity (-1*studentCapacity);
+			studentCapacity = value;
+			world.addStudentCapacity (studentCapacity);
+
+		}
+	}
+	public int ResidentCapacity
+	{
+		get{
+			return residentCapacity;
+		}
+		set{ 
+			world.addResidentCapacity (-1 * residentCapacity);
+			residentCapacity = value;
+			world.addResidentCapacity (residentCapacity);
+		}
+	}
 
 }

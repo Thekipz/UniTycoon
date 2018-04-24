@@ -9,32 +9,131 @@ public enum UniversityLevel {BreakingGround,InitialExpansion,Stage1,Stage2,Stage
 
 public class University
 {
+//CLASS VARS
+
 	UniversitySize size;//----------classes of studentPopulation
 	GameDifficulty difficulty;//----game difficulty, adjusts most parameters
 	UniversityLevel level;//--------stage in game progression
 
-	double academicNotoriety;
-	double facultyQuality;
-	double academicBldgsQuality;
+	//double academicNotoriety;
+	//double facultyQuality;
+	//double academicBldgsQuality;
 
 	double amenitiesQuantifier;
 
-
+	int residentCapacity;
 	int residentPopulation;//-------population of rent payers
+	int studentCapacity;
 	int studentPopulation;//--------population of tuition payers
 	int activeAlumPopulation;//-----population of donating alums (grows as notoriety grows)
 
+	double studentGrowthFactor;
+	double studentGrowthRate;
+	double residentGrowthFactor;
+	double residentGrowthRate;
 	double coffers;//---------------total player money in bank/wallet basic score
 	double tuitionRate;//-----------tuition charged per student per update
 	double rentRate;//--------------rent charged per resident per update
 	double scholarshipAllocation;//-money allocated to scholarships (deducted from tuition revenue)
 	double grantAllocation;//-------money allocated to research grants (deducted from tuition revenue)
-	double debt;//------------------total debt
-	double debtInterestRate;//------interest charged anually on debt
+	//double debt;//------------------total debt
+	//double debtInterestRate;//------interest charged anually on debt
 
+	double EASY_MOD;
+	double NORM_MOD;
+	double HARD_MOD;
+	int MONTH;
+	int YEAR;
+
+//CONSTRUCTOR
 
 	public University (GameDifficulty diff)
 	{
+		difficulty = diff;
+		level = UniversityLevel.BreakingGround;
+		size = UniversitySize.Tiny;
+		EASY_MOD = 1.5;
+		NORM_MOD = 1.0;
+		HARD_MOD = 0.6;
+		MONTH = 1000;
+		YEAR = 12 * MONTH;
 
+		double START_COFFERS = 100000.00;
+		switch(diff)
+		{
+		case GameDifficulty.Easy:
+			coffers = START_COFFERS * EASY_MOD;
+			break;
+		case GameDifficulty.Normal:
+			coffers = START_COFFERS * NORM_MOD;
+			break;
+		case GameDifficulty.Hard:
+			coffers = START_COFFERS * HARD_MOD;
+			break;
+		}
+		//academicNotoriety = 0;
+		//facultyQuality = 0;
+		//academicBldgsQuality = 0;
+
+		residentCapacity = 0;
+		residentPopulation = 0;
+		studentCapacity = 0;
+		studentPopulation = 0;
+		activeAlumPopulation = 0;
+
+		studentGrowthRate = 0.01 / MONTH;
+		residentGrowthRate = 0.01 / MONTH;
+		tuitionRate = 10000 / YEAR;
+		rentRate = 500 / MONTH;
+		scholarshipAllocation = 0;
+		grantAllocation = 0;
+		//debt = 100000;
+		//debtInterestRate = 0.05 / YEAR;
+
+
+	}
+
+//METHODS
+
+	public void updateUniversityVars (World world)
+	{
+		studentCapacity = world.TotalStudentCapacity;
+		residentCapacity = world.TotalResidentCapacity;
+		if (studentCapacity != 0) {
+			studentGrowthFactor = studentGrowthRate * studentPopulation * ((studentCapacity - studentPopulation) / studentCapacity);
+		}
+		studentPopulation = studentPopulation + (int)(studentPopulation * studentGrowthFactor);
+		if (residentCapacity != 0) {
+			residentGrowthFactor = residentGrowthRate * residentPopulation * ((residentCapacity - residentPopulation) / residentCapacity);
+		}
+		residentPopulation = residentPopulation + (int)(residentPopulation * residentGrowthFactor);
+		coffers = coffers + tuitionRate * studentPopulation + rentRate * residentCapacity - scholarshipAllocation / YEAR - grantAllocation / YEAR;
+
+		switch(difficulty)
+		{
+		case GameDifficulty.Easy:
+			coffers = coffers + activeAlumPopulation * 10 / MONTH;
+			break;
+		case GameDifficulty.Normal:
+			coffers = coffers + activeAlumPopulation * 1 / MONTH;
+			break;
+		case GameDifficulty.Hard:
+			coffers = coffers + activeAlumPopulation * 0.01 / MONTH;
+			break;
+		}	
+	}
+
+	public string moneyToString()
+	{
+		return coffers.ToString();
+	}
+
+//MUTATORS
+
+	public double Coffers
+	{
+		get{ 
+			return coffers;	
+		}
 	}
 }

@@ -8,7 +8,10 @@ public class World {
     int width;
     int height;
 	int scale;
+	int totalStudentCapacity;
+	int totalResidentCapacity;
     //Default world constructor, width and height are the number of tiles on map
+	//scale changes the size of tiles
 	public World(int width = 10, int height = 10, int scale=1)
     {
         this.Width = width;
@@ -35,7 +38,14 @@ public class World {
         Debug.Log("Tile (" + x + "," + y + ")");
         return tiles[x, y];
     }
-
+	public void addStudentCapacity(int cap)
+	{
+		totalStudentCapacity += cap;
+	}
+	public void addResidentCapacity(int cap)
+	{
+		totalResidentCapacity += cap;
+	}
 
 
 
@@ -64,6 +74,25 @@ public class World {
 		}
 		set{
 			scale = value;
+		}
+	}
+
+	public int TotalStudentCapacity
+	{
+		get{ 
+			return totalStudentCapacity;
+		}
+		set{
+			totalStudentCapacity = value;
+		}
+	}
+	public int TotalResidentCapacity
+	{
+		get{
+			return totalResidentCapacity;
+		}
+		set{ 
+			totalResidentCapacity = value;
 		}
 	}
 }
