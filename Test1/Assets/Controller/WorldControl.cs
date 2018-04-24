@@ -39,7 +39,7 @@ public class WorldControl : MonoBehaviour {
         text_money.text = "Money: $" + university.moneyToString();
         world = new World(10, 10, 35);
         int scale = world.Scale;
-		hideCG (uigrouptop);
+		showCG (uigrouptop);
 		showCG (uigroupbottom);
 		hideCG (buildMenu);
 		hideCG (popup);
@@ -154,14 +154,14 @@ public class WorldControl : MonoBehaviour {
         {
             return;
         }
-        else if (Input.GetMouseButtonDown(0))
+        else if (Input.GetMouseButtonDown(0)&&buildMenu.alpha == 0&&popup.alpha == 0)
         {
             lastFramePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             lastFramePosition.z = 0;
             select = ClickTile(lastFramePosition);
 			if (select == null)
 				return;
-            Debug.Log("Mouse clicked at X:" + select.X + ", Y: " + select.Y);
+            Debug.Log("Mouse clicked at X:" + select.X.ToString() + ", Y: " + select.Y.ToString());
             if (this.mode == Mode.Build)
             {
                 if (select.Type == Tile.TileType.Empty)
@@ -254,16 +254,15 @@ public class WorldControl : MonoBehaviour {
     {
         select.Type = Tile.TileType.Empty;
         this.mode = Mode.Play;
-		hideCG (uigrouptop);
-		hideCG (uigroupbottom);
+		
+		
 		hideCG (popup);
     }
     // Cancel button for demolish popup
     public void Cancel()
     {
         this.mode = Mode.Play;
-		hideCG (uigrouptop);
-		hideCG (uigroupbottom);
+		
 		hideCG (buildMenu);
     }
     public void BuildingSelect(int type)
