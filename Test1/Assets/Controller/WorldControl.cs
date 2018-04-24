@@ -85,64 +85,53 @@ public class WorldControl : MonoBehaviour {
         {
 			case Tile.TileType.Empty:
 				tile_go.GetComponent<SpriteRenderer> ().sprite = groundSprite;
-				//tile_sr.StudentCapacity = 0;
-				//tile_sr.ResidentCapacity = 0;
+				tile_sr.StudentCapacity = 0;
+				tile_sr.ResidentCapacity = 0;
                 break;
 			case Tile.TileType.Building:
 				tile_go.GetComponent<SpriteRenderer> ().sprite = buildingSprite;
-				//tile_sr.StudentCapacity = 0;
-				//tile_sr.ResidentCapacity = 500;
-				world.addResidentCapacity (500);
+				tile_sr.StudentCapacity = 0;
+				tile_sr.ResidentCapacity = 500;
                 break;
             case Tile.TileType.Class:
                 tile_go.GetComponent<SpriteRenderer>().sprite = classSprite;
-				//tile_sr.StudentCapacity = 200;
-				//tile_sr.ResidentCapacity = 0;
-				world.addStudentCapacity(200);
+				tile_sr.StudentCapacity = 200;
+				tile_sr.ResidentCapacity = 0;
                 break;
 			case Tile.TileType.Gym:
 				tile_go.GetComponent<SpriteRenderer> ().sprite = gymSprite;
-				//tile_sr.StudentCapacity = 250;
-				//tile_sr.ResidentCapacity = 50;
-				world.addStudentCapacity (250);
-				world.addResidentCapacity (50);
+				tile_sr.StudentCapacity = 250;
+				tile_sr.ResidentCapacity = 50;
 				break;
             case Tile.TileType.Lab:
                 tile_go.GetComponent<SpriteRenderer>().sprite = labSprite;
-				//tile_sr.StudentCapacity = 250;
-				//tile_sr.ResidentCapacity = 50;
-				world.addStudentCapacity (250);
-				world.addResidentCapacity (50);
+				tile_sr.StudentCapacity = 250;
+				tile_sr.ResidentCapacity = 50;
                 break;
             case Tile.TileType.Cafe:
                 tile_go.GetComponent<SpriteRenderer>().sprite = cafeSprite;
-				//tile_sr.StudentCapacity = 0;
-				//tile_sr.ResidentCapacity = 50;
-				world.addResidentCapacity (50);
+				tile_sr.StudentCapacity = 0;
+				tile_sr.ResidentCapacity = 50;
                 break;
             case Tile.TileType.Library:
                 tile_go.GetComponent<SpriteRenderer>().sprite = librarySprite;
-				//tile_sr.StudentCapacity = 500;
-				//tile_sr.ResidentCapacity = 50;
-				world.addStudentCapacity (500);
-				world.addResidentCapacity (50);
+				tile_sr.StudentCapacity = 500;
+				tile_sr.ResidentCapacity = 50;
                 break;
             case Tile.TileType.Parking:
                 tile_go.GetComponent<SpriteRenderer>().sprite = parkingSprite;
+				tile_sr.StudentCapacity = 0;
+				tile_sr.ResidentCapacity = 100;
                 break;
             case Tile.TileType.Stadium:
                 tile_go.GetComponent<SpriteRenderer>().sprite = stadiumSprite;
-				//tile_sr.StudentCapacity = 1000;
-				//tile_sr.ResidentCapacity = 100;
-				world.addStudentCapacity (1000);
-				world.addResidentCapacity (100);
+				tile_sr.StudentCapacity = 1000;
+				tile_sr.ResidentCapacity = 100;
 				break;
             case Tile.TileType.Admin:
                 tile_go.GetComponent<SpriteRenderer>().sprite = adminSprite;
-				//tile_sr.StudentCapacity = 100;
-				//tile_sr.ResidentCapacity = 10;
-				world.addStudentCapacity (100);
-				world.addResidentCapacity (10);
+				tile_sr.StudentCapacity = 100;
+				tile_sr.ResidentCapacity = 10;
 				break;
             default:
                 Debug.LogError("TileTypeChanged - Unrecognized Tile Type.");
