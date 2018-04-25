@@ -4,9 +4,10 @@ using UnityEngine;
 using System;
 
 public class Tile {
-
-    public enum TileType { Empty, Building, Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin };
+    
+    public enum TileType { Empty , Building, Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin };
     TileType type = TileType.Empty;
+    
     World world;
     int x, y;
 	int studentCapacity,residentCapacity;
