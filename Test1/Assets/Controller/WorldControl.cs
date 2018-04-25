@@ -7,7 +7,7 @@ public class WorldControl : MonoBehaviour {
 
 
     public Text text_money;
-    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup;
+    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message;
     public float elapsed = 0f;
     public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
     SpriteRenderer tile_sr;
@@ -43,6 +43,7 @@ public class WorldControl : MonoBehaviour {
 		showCG (uigroupbottom);
 		hideCG (buildMenu);
 		hideCG (popup);
+        hideCG(funds_message);
 
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
@@ -178,6 +179,7 @@ public class WorldControl : MonoBehaviour {
                             }
                             else
                             {
+                                showCG(funds_message);
                                 Debug.Log("Not enough money");
                             }
                             break;
@@ -190,6 +192,7 @@ public class WorldControl : MonoBehaviour {
                             }
                             else
                             {
+                                showCG(funds_message);
                                 Debug.Log("Not enough money");
                             }
                             break;
@@ -202,6 +205,7 @@ public class WorldControl : MonoBehaviour {
                             }
                             else
                             {
+                                showCG(funds_message);
                                 Debug.Log("Not enough money");
                             }
                             break;
@@ -214,6 +218,7 @@ public class WorldControl : MonoBehaviour {
                             }
                             else
                             {
+                                showCG(funds_message);
                                 Debug.Log("Not enough money");
                             }
                             break;
@@ -226,6 +231,7 @@ public class WorldControl : MonoBehaviour {
                             }
                             else
                             {
+                                showCG(funds_message);
                                 Debug.Log("Not enough money");
                             }
                             break;
@@ -238,6 +244,7 @@ public class WorldControl : MonoBehaviour {
                             }
                             else
                             {
+                                showCG(funds_message);
                                 Debug.Log("Not enough money");
                             }
                             break;
@@ -250,6 +257,7 @@ public class WorldControl : MonoBehaviour {
                             }
                             else
                             {
+                                showCG(funds_message);
                                 Debug.Log("Not enough money");
                             }
                             break;
@@ -262,6 +270,7 @@ public class WorldControl : MonoBehaviour {
                             }
                             else
                             {
+                                showCG(funds_message);
                                 Debug.Log("Not enough money");
                             }
                             break;
@@ -274,6 +283,7 @@ public class WorldControl : MonoBehaviour {
                             }
                             else
                             {
+                                showCG(funds_message);
                                 Debug.Log("Not enough money");
                             }
                             break;
@@ -335,7 +345,7 @@ public class WorldControl : MonoBehaviour {
     public void Cancel()
     {
         this.mode = Mode.Play;
-		
+        hideCG(funds_message);
 		hideCG (buildMenu);
     }
     public void BuildingSelect(int type)
