@@ -640,7 +640,7 @@ PlayerSettings:
   cloudServicesEnabled:
     UNet: 1
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: 5843f453-65be-43d8-b00c-61b1d1a53060
   projectName: Test1
   organizationId: thekipz

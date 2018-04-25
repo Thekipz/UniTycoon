@@ -963,8 +963,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -235.4, y: 218}
-  m_SizeDelta: {x: 420.2, y: 152.8}
+  m_AnchoredPosition: {x: -200.15, y: 203.5}
+  m_SizeDelta: {x: 349.7, y: 123.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &465559785
 MonoBehaviour:
@@ -985,7 +985,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 4afeff536152ce14fbda0ee5f251f15d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1600,7 +1600,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -85, y: 40}
+  m_AnchoredPosition: {x: -85, y: 10}
   m_SizeDelta: {x: 150, y: 36.97}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &796872147
@@ -2430,7 +2430,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 4afeff536152ce14fbda0ee5f251f15d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3236,7 +3236,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 85, y: 40}
+  m_AnchoredPosition: {x: 85, y: 10}
   m_SizeDelta: {x: 150, y: 36.97}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1682335476
@@ -3448,7 +3448,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 8812b893579fae04abc398aa5888ed4f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 24f30f92dadc32f42a7355c8ce1e63df, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3465,8 +3465,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1756587381}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 174.95, y: 175.65, z: 10}
-  m_LocalScale: {x: 43.713207, y: 43.713207, z: 43.713207}
+  m_LocalPosition: {x: 180.9, y: 169.7, z: 10}
+  m_LocalScale: {x: 80.53789, y: 80.53789, z: 80.53789}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
