@@ -136,5 +136,10 @@ public class University
 		get{ 
 			return (int)coffers;	
 		}
+        set
+        {
+            coffers = value;
+        }
+   
 	}
 }

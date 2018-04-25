@@ -171,9 +171,9 @@ public class WorldControl : MonoBehaviour {
                     switch (this.buildingType)
                     {
                         case BuildingType.Dorm:
-                            if (this.university.coffers >= 10000)
+                            if (this.university.Coffers >= 10000)
                             {
-                                this.univerity.coffers = this.univerity.coffers - 10000;
+                                this.university.Coffers = this.university.Coffers - 10000;
                                 select.Type = Tile.TileType.Building;
                                 Debug.Log("Dorm placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -184,9 +184,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Class:
-                            if (this.university.coffers >= 100000)
+                            if (this.university.Coffers >= 10000)
                             {
-                                this.univerity.coffers = this.univerity.coffers - 100000;
+                                this.university.Coffers = this.university.Coffers - 10000;
                                 select.Type = Tile.TileType.Class;
                                 Debug.Log("Class placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -197,9 +197,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Gym:
-                            if (this.university.coffers >= 100000)
+                            if (this.university.Coffers >= 10000)
                             {
-                                this.univerity.coffers = this.univerity.coffers - 100000;
+                                this.university.Coffers = this.university.Coffers - 10000;
                                 select.Type = Tile.TileType.Gym;
                                 Debug.Log("Gym placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -210,9 +210,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Library:
-                            if (this.university.coffers >= 100000)
+                            if (this.university.Coffers >= 100000)
                             {
-                                this.univerity.coffers = this.univerity.coffers - 100000;
+                                this.university.Coffers = this.university.Coffers - 100000;
                                 select.Type = Tile.TileType.Library;
                                 Debug.Log("Library placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -223,9 +223,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Cafe:
-                            if (this.university.coffers >= 100000)
+                            if (this.university.Coffers >= 100000)
                             {
-                                this.univerity.coffers = this.univerity.coffers - 100000;
+                                this.university.Coffers = this.university.Coffers - 100000;
                                 select.Type = Tile.TileType.Cafe;
                                 Debug.Log("Cafe placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -236,9 +236,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Admin:
-                            if (this.university.coffers >= 100000)
+                            if (this.university.Coffers >= 100000)
                             {
-                                this.univerity.coffers = this.univerity.coffers - 100000;
+                                this.university.Coffers = this.university.Coffers - 100000;
                                 select.Type = Tile.TileType.Admin;
                                 Debug.Log("Admin placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -249,9 +249,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Stadium:
-                            if (this.university.coffers >= 100000)
+                            if (this.university.Coffers >= 1)
                             {
-                                this.univerity.coffers = this.univerity.coffers - 100000;
+                                this.university.Coffers = this.university.Coffers - 1;
                                 select.Type = Tile.TileType.Stadium;
                                 Debug.Log("Stadium placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -262,9 +262,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Parking:
-                            if (this.university.coffers >= 100000)
+                            if (this.university.Coffers >= 1)
                             {
-                                this.univerity.coffers = this.univerity.coffers - 100000;
+                                this.university.Coffers = this.university.Coffers - 1;
                                 select.Type = Tile.TileType.Parking;
                                 Debug.Log("Parking placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -275,9 +275,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Lab:
-                            if (this.university.coffers >= 100000)
+                            if (this.university.Coffers >= 1)
                             {
-                                this.univerity.coffers = this.univerity.coffers - 100000;
+                                this.university.Coffers = this.university.Coffers - 1;
                                 select.Type = Tile.TileType.Lab;
                                 Debug.Log("Lab placed at X:" + select.X + ", Y: " + select.Y);
                             }
