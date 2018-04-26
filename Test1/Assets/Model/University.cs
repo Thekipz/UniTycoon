@@ -44,6 +44,9 @@ public class University
 	double HARD_MOD;
 	int MONTH;
 	int YEAR;
+    double DAY;
+    double HOUR;
+    long time;
 
 //CONSTRUCTOR
 
@@ -55,7 +58,9 @@ public class University
 		EASY_MOD = 1.5;
 		NORM_MOD = 1.0;
 		HARD_MOD = 0.6;
-		MONTH = 100;
+        HOUR = 0.25;
+        DAY = 24 * HOUR;
+        MONTH = (int)(30 * DAY);
 		YEAR = 12 * MONTH;
 
 		double START_COFFERS = 100000.00;
@@ -81,33 +86,36 @@ public class University
 		studentPopulation = 2;
 		activeAlumPopulation = 0;
 
-		studentGrowthRate = 0.5 / MONTH;
-		residentGrowthRate = 0.5 / MONTH;
-		tuitionRate = 10000 / YEAR;
-		rentRate = 500 / MONTH;
-		scholarshipAllocation = 0;
-		grantAllocation = 0;
-		//debt = 100000;
-		//debtInterestRate = 0.05 / YEAR;
+		studentGrowthRate = 0.5; //Month
+        studentGrowthFactor = 0;
+		residentGrowthRate = 0.5; //Month
+        residentGrowthFactor = 0;
+		tuitionRate = 10000; //Year
+		rentRate = 500; //Month
+		scholarshipAllocation = 0; //Year
+		grantAllocation = 0; //Year
+                             //debt = 100000;
+                             //debtInterestRate = 0.05 / YEAR;
 
-
+        time = 0;
 	}
 
 //METHODS
 
 	public void updateUniversityVars (World world)
 	{
+        clock();
 		studentCapacity = world.TotalStudentCapacity;
 		residentCapacity = world.TotalResidentCapacity;
 		if (studentCapacity != 0) {
-			studentGrowthFactor = studentGrowthRate * studentPopulation * ((studentCapacity - studentPopulation) / studentCapacity);
+            studentGrowthFactor = (studentGrowthRate / MONTH) * studentPopulation * ((studentCapacity - studentPopulation) / studentCapacity);
 		}
-		studentPopulation = studentPopulation + (studentPopulation * studentGrowthFactor);
+		studentPopulation = studentPopulation + studentGrowthFactor;
 		if (residentCapacity != 0) {
-			residentGrowthFactor = residentGrowthRate * residentPopulation * ((residentCapacity - residentPopulation) / residentCapacity);
+            residentGrowthFactor = (residentGrowthRate / MONTH) * residentPopulation * ((residentCapacity - residentPopulation) / residentCapacity);
 		}
-		residentPopulation = residentPopulation + (residentPopulation * residentGrowthFactor);
-		coffers = coffers + (tuitionRate * studentPopulation) + (rentRate * residentPopulation) - (scholarshipAllocation / YEAR) - (grantAllocation / YEAR);
+		residentPopulation = residentPopulation + residentGrowthFactor;
+        coffers = coffers + (tuitionRate / YEAR * studentPopulation) + (rentRate / MONTH * residentPopulation) - (scholarshipAllocation / YEAR) - (grantAllocation / YEAR);
 
 		switch(difficulty)
 		{
@@ -128,9 +136,40 @@ public class University
 	{
         int studentPop = (int)studentPopulation;
         int residentPop = (int)residentPopulation;
-        return "Money: $" + Coffers.ToString () + "\nStudents (POP/CAP): " + studentPop.ToString () + "/" + studentCapacity.ToString () + "\nResidents (POP/CAP): " + residentPop.ToString () + "/" + residentCapacity.ToString ();
+        return "Money: $" + Coffers.ToString() + "\nStudents (POP/CAP): " + studentPop.ToString() + "/" + studentCapacity.ToString() + "\nResidents (POP/CAP): " + residentPop.ToString() + "/" + residentCapacity.ToString() + "\nTime: " + Time();
 	}
 
+    private void clock(){
+        time++;
+    }
+
+    private string Time(){
+        long tmp = time;
+        int years = (int)(tmp / YEAR);
+        tmp = tmp - years * YEAR;
+        int months = (int)(tmp / MONTH);
+        tmp = tmp - months * MONTH;
+        int days = (int)(tmp / DAY);
+        tmp = (long)((double)tmp - days * DAY);
+        int hours = (int)(tmp / HOUR);
+        return "Year " + years.ToString() + ", Month " + months.ToString() + " Day " + days.ToString() + ", Hour " + hours.ToString();
+    }
+    public void addScholarship(double val)
+    {
+        scholarshipAllocation += val;
+    }
+    public void addGrant(double val)
+    {
+        grantAllocation += val;
+    }
+    public void addStudents(int val)
+    {
+        studentPopulation += val;
+    }
+    public void addResidents(int val)
+    {
+        residentPopulation += val;
+    }   
 //MUTATORS
 
 	public int Coffers
@@ -138,10 +177,40 @@ public class University
 		get{ 
 			return (int)coffers;	
 		}
-        set
-        {
+        set{
             coffers = value;
         }
    
 	}
+
+    public double ScholarshipAllocation
+    {
+        get{
+            return scholarshipAllocation;
+        }
+        set{
+            scholarshipAllocation = value;
+        }
+    }
+    public double GrantAllocation
+    {
+        get{
+            return grantAllocation;
+        }
+        set{
+            grantAllocation = value;
+        }
+    }
+    public double TuitionRate
+    {
+        get{
+            return tuitionRate;
+        }
+    }
+    public double RentRate
+    {
+        get{
+            return rentRate;
+        }
+    }
 }

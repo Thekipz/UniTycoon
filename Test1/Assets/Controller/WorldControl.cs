@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class WorldControl : MonoBehaviour {
 
 
-    public Text text_money;
-    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message;
+    public Text text_money,adminf1,adminf2;
+    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu;
     public float elapsed = 0f;
     public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
     SpriteRenderer tile_sr;
@@ -20,16 +20,24 @@ public class WorldControl : MonoBehaviour {
     public enum BuildingType { None, Dorm, Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin };
 	University university;
     BuildingType buildingType = BuildingType.None;
+    public InputField AMF1, AMF2;
+    int amf1val, amf2val;
 
 	public void hideCG(CanvasGroup cg){
 		cg.alpha = 0;
 		cg.blocksRaycasts = false;
 		cg.interactable = false;
+        if(cg==admin_menu){
+            AMF1.DeactivateInputField();
+        }
 	}
 	public void showCG(CanvasGroup cg){
 		cg.alpha = 1;
 		cg.blocksRaycasts = true;
 		cg.interactable = true;
+        if (cg == admin_menu){
+            AMF1.ActivateInputField();
+        }
 	}
 	public void updateHUD(){
 		text_money.text = university.HUD();
@@ -47,7 +55,7 @@ public class WorldControl : MonoBehaviour {
 		hideCG (buildMenu);
 		hideCG (popup);
         hideCG(funds_message);
-
+        hideCG(admin_menu);
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
         //Create a display object for all of the tiles
@@ -292,16 +300,13 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                     }
+                }else{
+                    Debug.LogError("The selected tile is not empty");
                 }
 
                 this.buildingType = BuildingType.None;
                 this.mode = Mode.Play;
-            } else
-            {
-                Debug.LogError("The selected tile is not empty");
-            }
-
-            if (this.mode == Mode.Destroy)
+            } else if (this.mode == Mode.Destroy)
         {
 			showCG (uigrouptop);
 			showCG (uigroupbottom);
@@ -309,13 +314,70 @@ public class WorldControl : MonoBehaviour {
         }
             else if (this.mode == Mode.Play)
             {
-                //------------------------------------------------------#TODO: Add popup for building status or w/e
+                switch (select.Type)
+                {
+                    case Tile.TileType.Building:
+                        
+                        break;
+                    case Tile.TileType.Class:
+                        
+                        break;
+                    case Tile.TileType.Gym:
+                        
+                        break;
+                    case Tile.TileType.Library:
+                        
+                        break;
+                    case Tile.TileType.Cafe:
+                        
+                        break;
+                    case Tile.TileType.Admin:
+                        showCG(admin_menu);
+                        break;
+                    case Tile.TileType.Stadium:
+                       
+                        break;
+                    case Tile.TileType.Parking:
+                        
+                        break;
+                    case Tile.TileType.Lab:
+                       
+                        break;
+                }
             }
         }
         
             
           }
 
+    public void AMF1changed()
+    {
+        amf1val = int.Parse(AMF1.text);
+        int total = (int)((double)amf1val * university.TuitionRate);
+        adminf1.text = "Spend $" + total.ToString() + " to recruit " + amf1val.ToString() + " students.";
+    }
+    public void AMF2changed()
+    {
+        amf2val = int.Parse(AMF2.text);
+        int total = (int)((double)amf2val * university.RentRate);
+        adminf2.text = "Spend $" + total.ToString() + " to recruit " + amf2val.ToString() + " residents.";
+    }
+    public void AMF1pressed()
+    {
+        university.addScholarship((double)amf1val * university.TuitionRate);
+        university.addStudents(amf1val);
+    }
+    public void AMF2pressed()
+    {
+        university.addGrant((double)amf2val * university.RentRate);
+        university.addResidents(amf2val);
+    }
+    public void AMFclose()
+    {
+        AMF1.DeactivateInputField();
+        AMF2.DeactivateInputField();
+        hideCG(admin_menu);
+    }
     // Function to get tile at mouse location
     Tile ClickTile(Vector3 coord)
      {
@@ -334,15 +396,12 @@ public class WorldControl : MonoBehaviour {
     public void SetMode_Destroy()
     {
         this.mode = Mode.Destroy;
-         
     }
     //confirm button for demolish popup
     public void Confirm_Destroy()
     {
         select.Type = Tile.TileType.Empty;
         this.mode = Mode.Play;
-		
-		
 		hideCG (popup);
     }
     // Cancel button for demolish popup
