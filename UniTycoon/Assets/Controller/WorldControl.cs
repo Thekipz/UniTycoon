@@ -522,6 +522,7 @@ public class WorldControl : MonoBehaviour {
     {
         this.mode = Mode.Play;
         hideCG(funds_message);
+        hideCG(popup);
 		hideCG (buildMenu);
     }
     public void BuildingSelect(int type)
