@@ -675,7 +675,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: Confirm here
 --- !u!222 &124427371
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2585,13 +2585,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: Advertise
 --- !u!222 &714214786
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3562,7 +3562,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter text...
+  m_Text: Enter Ad budget
 --- !u!222 &915683088
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4115,7 +4115,7 @@ GameObject:
   - component: {fileID: 1100869190}
   - component: {fileID: 1100869189}
   m_Layer: 5
-  m_Name: Text
+  m_Name: TextCheckAdv
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8710,6 +8710,7 @@ MonoBehaviour:
   hintReq2: {fileID: 602915666}
   hintReq3: {fileID: 664756308}
   hintReq4: {fileID: 1524822410}
+  advanceButtonTxt: {fileID: 1100869189}
   uigrouptop: {fileID: 465559787}
   uigroupbottom: {fileID: 1207297460}
   buildMenu: {fileID: 1372642031}

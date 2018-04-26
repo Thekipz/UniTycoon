@@ -210,6 +210,23 @@ public class University
                 }break;
         }
     }   
+    public bool canAdvanceLevel(World world)
+    {
+        switch (level)
+        {
+            case UniversityLevel.BreakingGround:
+                return initialExpansionReqsMet(world);
+            case UniversityLevel.InitialExpansion:
+                return Stage1ReqsMet(world);
+            case UniversityLevel.Stage1:
+                return Stage2ReqsMet(world);
+            case UniversityLevel.Stage2:
+                return Stage3ReqsMet(world);
+            case UniversityLevel.Stage3:
+                return VictoryReqsMet(world);
+        }
+        return false;
+    }
     private bool initialExpansionReqsMet(World world)
     {
         Tile tile_sr;
@@ -313,6 +330,11 @@ public class University
         DAY = 24 * HOUR;
         MONTH = (int)(30 * DAY);
         YEAR = 12 * MONTH;
+    }
+    public void advertise(int money){
+        studentGrowthRate = studentGrowthRate * (1 + ((double)money / coffers));
+        residentGrowthRate = residentGrowthRate * (1 + ((double)money / coffers));
+        coffers = coffers - (double)money;
     }
 //MUTATORS
 

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class WorldControl : MonoBehaviour {
 
 
-    public Text text_money,adminf1,adminf2,adminf3,hintCurrLvl,hintNxtLvl,hintReq1,hintReq2,hintReq3,hintReq4;
+    public Text text_money,adminf1,adminf2,adminf3,hintCurrLvl,hintNxtLvl,hintReq1,hintReq2,hintReq3,hintReq4,advanceButtonTxt;
     public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup;
     public float elapsed = 0f;
     public float timeInterval = 2f;
@@ -341,24 +341,14 @@ public class WorldControl : MonoBehaviour {
         cg.alpha = 0;
         cg.blocksRaycasts = false;
         cg.interactable = false;
-        if (cg == admin_menu)
-        {
-            //AMF1.DeactivateInputField();
-            //AMF2.DeactivateInputField();
-            //AMF3.DeactivateInputField();
-        }
+
     }
     public void showCG(CanvasGroup cg)
     {
         cg.alpha = 1;
         cg.blocksRaycasts = true;
         cg.interactable = true;
-        if (cg == admin_menu)
-        {
-            //AMF1.ActivateInputField();
-            //AMF2.ActivateInputField();
-            //AMF3.ActivateInputField();
-        }
+
     }
     public void updateHUD(){ text_money.text = university.HUD(); }
 
@@ -394,12 +384,14 @@ public class WorldControl : MonoBehaviour {
 
     public void AMF3changed(){
         amf3val = int.Parse(AMF3.text);
-        int total = (int)((double)amf2val * university.RentRate);
-        //adminf2.text = "Spend $" + total.ToString() + " to recruit " + amf2val.ToString() + " residents.";
+        if (amf3val <= university.Coffers)
+            adminf3.text = "Spend $" + amf3val.ToString() + " on advertising";
+        else
+            adminf3.text = "$"+amf3val.ToString()+" is bigger than your budget of $"+university.Coffers.ToString();
     }
     public void AMF3pressed(){
-        //university.addScholarship((double)amf1val * university.TuitionRate);
-        //university.addStudents(amf1val);
+        if(amf3val <= university.Coffers)
+            university.advertise(amf3val);
     }
 
     public void AMFclose(){
@@ -497,6 +489,7 @@ public class WorldControl : MonoBehaviour {
             hintReq3.text = "Have a resident population greater than or equal to 1000";
             hintReq4.text = "Have $1,000,000 in the bank or more";
         }
+        advanceButtonTxt.text = "Check ability to advance";
         hideCG(uigrouptop);
         hideCG(uigroupbottom);
         showCG(hintpopup);
@@ -507,11 +500,15 @@ public class WorldControl : MonoBehaviour {
         showCG(uigrouptop);
         showCG(uigroupbottom);
         hideCG(hintpopup);
+        advanceButtonTxt.text = "Check ability to advance";
     }
     //Check upgrade button
     public void Check_Upgrade()
     {
-        
+        if (university.canAdvanceLevel(world))
+            advanceButtonTxt.text = "Able to Advance!";
+        else
+            advanceButtonTxt.text = "Unable to advance, requirements not met!";
     }
     //confirm button for demolish popup
     public void Confirm_Destroy()
