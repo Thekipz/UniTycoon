@@ -301,6 +301,19 @@ public class University
     public bool stage1() { return level == UniversityLevel.Stage1; }
     public bool stage2() { return level == UniversityLevel.Stage2; }
     public bool stage3() { return level == UniversityLevel.Stage3; }
+
+    public void activateTimeAcc(){
+        HOUR = 0.25/100;
+        DAY = 24 * HOUR;
+        MONTH = (int)(30 * DAY);
+        YEAR = 12 * MONTH;
+    }
+    public void deactivateTimeAcc(){
+        HOUR = 0.25;
+        DAY = 24 * HOUR;
+        MONTH = (int)(30 * DAY);
+        YEAR = 12 * MONTH;
+    }
 //MUTATORS
 
 	public int Coffers

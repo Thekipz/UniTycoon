@@ -9,6 +9,7 @@ public class WorldControl : MonoBehaviour {
     public Text text_money,adminf1,adminf2,adminf3,hintCurrLvl,hintNxtLvl,hintReq1,hintReq2,hintReq3,hintReq4;
     public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup;
     public float elapsed = 0f;
+    public float timeInterval = 2f;
     public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
     SpriteRenderer tile_sr;
     World world;
@@ -140,9 +141,9 @@ public class WorldControl : MonoBehaviour {
     void Update() {
         updateHUD();
         elapsed += Time.deltaTime;
-        if(elapsed >= 2f)
+        if(elapsed >= timeInterval)
         {
-            elapsed = elapsed % 2f;
+            elapsed = elapsed % timeInterval;
 			university.updateUniversityVars (world);
 		}
         //Checks if there is a UI element in front of a tile on touch, if there is not, then selects the tile
@@ -360,6 +361,17 @@ public class WorldControl : MonoBehaviour {
         }
     }
     public void updateHUD(){ text_money.text = university.HUD(); }
+
+    public void timeAcc(bool on){
+        if(on){
+            //university.activateTimeAcc();
+            timeInterval = timeInterval / 100;
+        }else{
+            //university.deactivateTimeAcc();
+            timeInterval = 2f;
+        }
+    }
+
     public void AMF1changed(){
         amf1val = int.Parse(AMF1.text);
         int total = (int)((double)amf1val * university.TuitionRate);
