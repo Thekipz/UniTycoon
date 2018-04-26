@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class WorldControl : MonoBehaviour {
 
 
-    public Text text_money,adminf1,adminf2;
-    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu;
+    public Text text_money,adminf1,adminf2,adminf3,hintCurrLvl,hintNxtLvl,hintReq1,hintReq2,hintReq3,hintReq4;
+    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup;
     public float elapsed = 0f;
     public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
     SpriteRenderer tile_sr;
@@ -20,28 +20,10 @@ public class WorldControl : MonoBehaviour {
     public enum BuildingType { None, Dorm, Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin };
 	University university;
     BuildingType buildingType = BuildingType.None;
-    public InputField AMF1, AMF2;
-    int amf1val, amf2val;
-
-	public void hideCG(CanvasGroup cg){
-		cg.alpha = 0;
-		cg.blocksRaycasts = false;
-		cg.interactable = false;
-        if(cg==admin_menu){
-            AMF1.DeactivateInputField();
-        }
-	}
-	public void showCG(CanvasGroup cg){
-		cg.alpha = 1;
-		cg.blocksRaycasts = true;
-		cg.interactable = true;
-        if (cg == admin_menu){
-            AMF1.ActivateInputField();
-        }
-	}
-	public void updateHUD(){
-		text_money.text = university.HUD();
-	}
+    public InputField AMF1, AMF2, AMF3; //admin menu inputfields
+    int amf1val, amf2val, amf3val; //value of admin menu entries
+    public Button bdorm, bclass, bgym, blib, bcafe, badmin, bstadium, bpark, blab, bcancel;
+	
     // Initialize World
     void Start() {
 		Debug.Log ("Start...");
@@ -56,6 +38,7 @@ public class WorldControl : MonoBehaviour {
 		hideCG (popup);
         hideCG(funds_message);
         hideCG(admin_menu);
+        hideCG(hintpopup);
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
         //Create a display object for all of the tiles
@@ -155,13 +138,12 @@ public class WorldControl : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-
+        updateHUD();
         elapsed += Time.deltaTime;
         if(elapsed >= 2f)
         {
             elapsed = elapsed % 2f;
 			university.updateUniversityVars (world);
-			updateHUD ();
 		}
         //Checks if there is a UI element in front of a tile on touch, if there is not, then selects the tile
         if (EventSystem.current.IsPointerOverGameObject())
@@ -248,9 +230,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Admin:
-                            if (this.university.Coffers >= 100000)
+                            if (this.university.Coffers >= 50000)
                             {
-                                this.university.Coffers = this.university.Coffers - 100000;
+                                this.university.Coffers = this.university.Coffers - 50000;
                                 select.Type = Tile.TileType.Admin;
                                 Debug.Log("Admin placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -306,12 +288,13 @@ public class WorldControl : MonoBehaviour {
 
                 this.buildingType = BuildingType.None;
                 this.mode = Mode.Play;
-            } else if (this.mode == Mode.Destroy)
-        {
+            } 
+            else if (this.mode == Mode.Destroy)
+            {
 			showCG (uigrouptop);
 			showCG (uigroupbottom);
 			showCG (popup);
-        }
+            }
             else if (this.mode == Mode.Play)
             {
                 switch (select.Type)
@@ -350,34 +333,67 @@ public class WorldControl : MonoBehaviour {
             
           }
 
-    public void AMF1changed()
+    //UTILITY FUNCTIONS AND CALLBACKS
+
+    public void hideCG(CanvasGroup cg)
     {
+        cg.alpha = 0;
+        cg.blocksRaycasts = false;
+        cg.interactable = false;
+        if (cg == admin_menu)
+        {
+            //AMF1.DeactivateInputField();
+            //AMF2.DeactivateInputField();
+            //AMF3.DeactivateInputField();
+        }
+    }
+    public void showCG(CanvasGroup cg)
+    {
+        cg.alpha = 1;
+        cg.blocksRaycasts = true;
+        cg.interactable = true;
+        if (cg == admin_menu)
+        {
+            //AMF1.ActivateInputField();
+            //AMF2.ActivateInputField();
+            //AMF3.ActivateInputField();
+        }
+    }
+    public void updateHUD(){ text_money.text = university.HUD(); }
+    public void AMF1changed(){
         amf1val = int.Parse(AMF1.text);
         int total = (int)((double)amf1val * university.TuitionRate);
-        adminf1.text = "Spend $" + total.ToString() + " to recruit " + amf1val.ToString() + " students.";
+        adminf1.text = "Dedicate $" + total.ToString() + " to recruit " + amf1val.ToString() + " students.";
     }
-    public void AMF2changed()
-    {
-        amf2val = int.Parse(AMF2.text);
-        int total = (int)((double)amf2val * university.RentRate);
-        adminf2.text = "Spend $" + total.ToString() + " to recruit " + amf2val.ToString() + " residents.";
-    }
-    public void AMF1pressed()
-    {
+    public void AMF1pressed(){
         university.addScholarship((double)amf1val * university.TuitionRate);
         university.addStudents(amf1val);
     }
-    public void AMF2pressed()
-    {
+
+    public void AMF2changed(){
+        amf2val = int.Parse(AMF2.text);
+        int total = (int)((double)amf2val * university.RentRate);
+        adminf2.text = "Dedicate $" + total.ToString() + " to recruit " + amf2val.ToString() + " residents.";
+    }
+    public void AMF2pressed(){
         university.addGrant((double)amf2val * university.RentRate);
         university.addResidents(amf2val);
     }
-    public void AMFclose()
-    {
-        AMF1.DeactivateInputField();
-        AMF2.DeactivateInputField();
+
+    public void AMF3changed(){
+        amf3val = int.Parse(AMF3.text);
+        int total = (int)((double)amf2val * university.RentRate);
+        //adminf2.text = "Spend $" + total.ToString() + " to recruit " + amf2val.ToString() + " residents.";
+    }
+    public void AMF3pressed(){
+        //university.addScholarship((double)amf1val * university.TuitionRate);
+        //university.addStudents(amf1val);
+    }
+
+    public void AMFclose(){
         hideCG(admin_menu);
     }
+
     // Function to get tile at mouse location
     Tile ClickTile(Vector3 coord)
      {
@@ -390,12 +406,100 @@ public class WorldControl : MonoBehaviour {
     public void SetMode_Build()
     {
 		showCG (buildMenu);
+        if (university.breakingGround()){
+            hideCG(bgym.GetComponent<CanvasGroup>());
+            hideCG(blib.GetComponent<CanvasGroup>());
+            hideCG(bcafe.GetComponent<CanvasGroup>());
+            hideCG(bstadium.GetComponent<CanvasGroup>());
+            hideCG(bpark.GetComponent<CanvasGroup>());
+            hideCG(blab.GetComponent<CanvasGroup>());
+        }else if(university.initialExpansion()){
+            showCG(bgym.GetComponent<CanvasGroup>());
+            showCG(blib.GetComponent<CanvasGroup>());
+            hideCG(bcafe.GetComponent<CanvasGroup>());
+            hideCG(bstadium.GetComponent<CanvasGroup>());
+            hideCG(bpark.GetComponent<CanvasGroup>());
+            hideCG(blab.GetComponent<CanvasGroup>());
+        }else if(university.stage1()){
+            showCG(bcafe.GetComponent<CanvasGroup>());
+            showCG(bpark.GetComponent<CanvasGroup>());
+            hideCG(blab.GetComponent<CanvasGroup>());
+            hideCG(bstadium.GetComponent<CanvasGroup>());
+        }else if(university.stage2()){
+            showCG(bstadium.GetComponent<CanvasGroup>());
+            hideCG(blab.GetComponent<CanvasGroup>());
+        }else if(university.stage3()){
+            showCG(blab.GetComponent<CanvasGroup>());
+        }
         this.mode = Mode.Build;
     }
     //Called on "Destroy" button click
     public void SetMode_Destroy()
     {
         this.mode = Mode.Destroy;
+    }
+    public void Advance_Clicked()
+    {
+        university.advanceLevel(world);
+    }
+    //Called on Get Hint button click
+    public void Get_Hint_Clicked()
+    {
+        if (university.breakingGround()){
+            hintCurrLvl.text = "Current Level\nBreaking Ground";
+            hintNxtLvl.text = "Next Level\nInitial Expansion";
+            hintReq1.text = "Build an administration building to manage your university from.";
+            hintReq2.text = "Build a campus with a student capacity of 1000 or greater.";
+            hintReq3.text = "Build a campus with a resident capacity of 500 or greater.";
+            hintReq4.text = "";
+        }
+        else if (university.initialExpansion()){
+            hintCurrLvl.text = "Current Level\nInitial Expansion";
+            hintNxtLvl.text = "Next Level\nStage 1";
+            hintReq1.text = "Build a Gym";
+            hintReq2.text = "Build a Library";
+            hintReq3.text = "Have a student capacity greater than or equal to 5000";
+            hintReq4.text = "Have a resident capacity greater than or equal to 1000";
+        }
+        else if (university.stage1()){
+            hintCurrLvl.text = "Current Level\nStage 1";
+            hintNxtLvl.text = "Next Level\nStage 2";
+            hintReq1.text = "Build a Cafe";
+            hintReq2.text = "Build a Parking Garage";
+            hintReq3.text = "Have a student population greater than or equal to 5000";
+            hintReq4.text = "Have a resident population greater than or equal to 1000";
+        }
+        else if (university.stage2()){
+            hintCurrLvl.text = "Current Level\nStage 2";
+            hintNxtLvl.text = "Next Level\nStage 3";
+            hintReq1.text = "Build a Stadium";
+            hintReq2.text = "Have a student population greater than or equal to 10000";
+            hintReq3.text = "Have a resident population greater than or equal to 3000";
+            hintReq4.text = "Have $150,000 in the bank or more";
+        }
+        else if (university.stage3()){
+            hintCurrLvl.text = "Current Level\nStage 3";
+            hintNxtLvl.text = "Next Level\nVictory!";
+            hintReq1.text = "Build a lab";
+            hintReq2.text = "Have a student population greater than or equal to 5000";
+            hintReq3.text = "Have a resident population greater than or equal to 1000";
+            hintReq4.text = "Have $1,000,000 in the bank or more";
+        }
+        hideCG(uigrouptop);
+        hideCG(uigroupbottom);
+        showCG(hintpopup);
+    }
+    //Exit hint button
+    public void Exit_Hint()
+    {
+        showCG(uigrouptop);
+        showCG(uigroupbottom);
+        hideCG(hintpopup);
+    }
+    //Check upgrade button
+    public void Check_Upgrade()
+    {
+        
     }
     //confirm button for demolish popup
     public void Confirm_Destroy()
@@ -446,9 +550,6 @@ public class WorldControl : MonoBehaviour {
                 this.buildingType = BuildingType.None;
                 break;
         }
-
-
-       
 		hideCG (buildMenu);
     }
 

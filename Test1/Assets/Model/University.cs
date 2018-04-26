@@ -63,7 +63,7 @@ public class University
         MONTH = (int)(30 * DAY);
 		YEAR = 12 * MONTH;
 
-		double START_COFFERS = 100000.00;
+		double START_COFFERS = 150000.00;
 		switch(diff)
 		{
 		case GameDifficulty.Easy:
@@ -81,9 +81,9 @@ public class University
 		//academicBldgsQuality = 0;
 
 		residentCapacity = 0;
-		residentPopulation = 2;
+		residentPopulation = 0;
 		studentCapacity = 0;
-		studentPopulation = 2;
+		studentPopulation = 0;
 		activeAlumPopulation = 0;
 
 		studentGrowthRate = 0.5; //Month
@@ -107,16 +107,14 @@ public class University
         clock();
 		studentCapacity = world.TotalStudentCapacity;
 		residentCapacity = world.TotalResidentCapacity;
-		if (studentCapacity != 0) {
+        if (level != UniversityLevel.BreakingGround)
+        {
             studentGrowthFactor = (studentGrowthRate / MONTH) * studentPopulation * ((studentCapacity - studentPopulation) / studentCapacity);
-		}
-		studentPopulation = studentPopulation + studentGrowthFactor;
-		if (residentCapacity != 0) {
+            studentPopulation = studentPopulation + studentGrowthFactor;
             residentGrowthFactor = (residentGrowthRate / MONTH) * residentPopulation * ((residentCapacity - residentPopulation) / residentCapacity);
-		}
-		residentPopulation = residentPopulation + residentGrowthFactor;
-        coffers = coffers + (tuitionRate / YEAR * studentPopulation) + (rentRate / MONTH * residentPopulation) - (scholarshipAllocation / YEAR) - (grantAllocation / YEAR);
-
+            residentPopulation = residentPopulation + residentGrowthFactor;
+            coffers = coffers + (tuitionRate / YEAR * studentPopulation) + (rentRate / MONTH * residentPopulation) - (scholarshipAllocation / YEAR) - (grantAllocation / YEAR);
+        }
 		switch(difficulty)
 		{
 		case GameDifficulty.Easy:
@@ -136,13 +134,28 @@ public class University
 	{
         int studentPop = (int)studentPopulation;
         int residentPop = (int)residentPopulation;
-        return "Money: $" + Coffers.ToString() + "\nStudents (POP/CAP): " + studentPop.ToString() + "/" + studentCapacity.ToString() + "\nResidents (POP/CAP): " + residentPop.ToString() + "/" + residentCapacity.ToString() + "\nTime: " + Time();
+        return "Time: " + Time() + "\nLevel: " + Level() + "\nMoney: $" + Coffers.ToString() + "\nStudents (POP/CAP): " + studentPop.ToString() + "/" + studentCapacity.ToString() + "\nResidents (POP/CAP): " + residentPop.ToString() + "/" + residentCapacity.ToString();
 	}
 
     private void clock(){
         time++;
     }
-
+    private string Level(){
+        switch(level)
+        {
+            case UniversityLevel.BreakingGround:
+                return "Breaking Ground!";
+            case UniversityLevel.InitialExpansion:
+                return "Initial Expansion";
+            case UniversityLevel.Stage1:
+                return "Stage 1";
+            case UniversityLevel.Stage2:
+                return "Stage 2";
+            case UniversityLevel.Stage3:
+                return "Stage 3";
+        }
+        return "N/A";
+    }
     private string Time(){
         long tmp = time;
         int years = (int)(tmp / YEAR);
@@ -152,24 +165,142 @@ public class University
         int days = (int)(tmp / DAY);
         tmp = (long)((double)tmp - days * DAY);
         int hours = (int)(tmp / HOUR);
-        return "Year " + years.ToString() + ", Month " + months.ToString() + " Day " + days.ToString() + ", Hour " + hours.ToString();
+        return "Y.M.D.H: " + years.ToString() + "." + months.ToString() + "." + days.ToString() + "." + hours.ToString();
     }
-    public void addScholarship(double val)
+    
+    public void advanceLevel(World world)
     {
-        scholarshipAllocation += val;
-    }
-    public void addGrant(double val)
-    {
-        grantAllocation += val;
-    }
-    public void addStudents(int val)
-    {
-        studentPopulation += val;
-    }
-    public void addResidents(int val)
-    {
-        residentPopulation += val;
+        switch(level)
+        {
+            case UniversityLevel.BreakingGround:
+                if(initialExpansionReqsMet(world)){
+                    level = UniversityLevel.InitialExpansion;
+                    studentPopulation = 1;
+                    residentPopulation = 1;
+                    //advance
+                }else{
+                    Debug.Log("Requirements to advance not yet met");
+                }break;
+            case UniversityLevel.InitialExpansion:
+                if(Stage1ReqsMet(world)){
+                    level = UniversityLevel.Stage1;
+                    //advance
+                }else{
+                    Debug.Log("Requirements to advance not yet met");
+                }break;
+            case UniversityLevel.Stage1:
+                if(Stage2ReqsMet(world)){
+                    level = UniversityLevel.Stage2;
+                    //advance
+                }else{
+                    Debug.Log("Requirements to advance not yet met");
+                }break;
+            case UniversityLevel.Stage2:
+                if(Stage3ReqsMet(world)){
+                    level = UniversityLevel.Stage3;
+                    //advance
+                }else{
+                    Debug.Log("Requirements to advance not yet met");
+                }break;
+            case UniversityLevel.Stage3:
+                if(VictoryReqsMet(world)){
+                    //VICTORY
+                } else{
+                    Debug.Log("Requirements to advance not yet met");
+                }break;
+        }
     }   
+    private bool initialExpansionReqsMet(World world)
+    {
+        Tile tile_sr;
+        bool hasAdminBldg = false;
+        int totalStudentCap = world.TotalStudentCapacity;
+        int totalResidentCap = world.TotalResidentCapacity;
+        for (int i = 0; i < world.Width; i++){
+            for (int j = 0; j < world.Height; j++){
+                tile_sr = world.GetTileAt(i, j);
+                if(tile_sr.Type == Tile.TileType.Admin){
+                    hasAdminBldg = true;
+                }
+            }
+        }
+        return (hasAdminBldg && (totalStudentCap >= 1000) && (totalResidentCap >= 500));
+    }
+    private bool Stage1ReqsMet(World world)
+    {
+        bool hasLib = false, hasGym = false;
+        Tile tile_sr;
+        int totalStudentCap = world.TotalStudentCapacity;
+        int totalResidentCap = world.TotalResidentCapacity;
+        for (int i = 0; i < world.Width; i++)
+        {
+            for (int j = 0; j < world.Height; j++)
+            {
+                tile_sr = world.GetTileAt(i, j);
+                if (tile_sr.Type == Tile.TileType.Gym)
+                    hasGym = true;
+                if (tile_sr.Type == Tile.TileType.Library)
+                    hasLib = true;
+            }
+        }
+        return (hasLib && hasGym && (totalStudentCap >= 5000) && (totalResidentCap >= 1000));
+    }
+    private bool Stage2ReqsMet(World world)
+    {
+        bool hasCafe = false, hasParking = false;
+        Tile tile_sr;
+        for (int i = 0; i < world.Width; i++)
+        {
+            for (int j = 0; j < world.Height; j++)
+            {
+                tile_sr = world.GetTileAt(i, j);
+                if (tile_sr.Type == Tile.TileType.Cafe)
+                    hasCafe = true;
+                if (tile_sr.Type == Tile.TileType.Parking)
+                    hasParking = true;
+            }
+        }
+        return (hasCafe && hasParking && (studentPopulation >= 5000) && (residentPopulation >= 1000));
+    }
+    private bool Stage3ReqsMet(World world)
+    {
+        Tile tile_sr;
+        bool hasStadium = false;
+        for (int i = 0; i < world.Width; i++)
+        {
+            for (int j = 0; j < world.Height; j++)
+            {
+                tile_sr = world.GetTileAt(i, j);
+                if (tile_sr.Type == Tile.TileType.Stadium)
+                    hasStadium = true;
+            }
+        }
+        return (hasStadium && (studentPopulation >= 10000) && (residentPopulation >= 3000) && (coffers >= 150000));
+    }
+    private bool VictoryReqsMet(World world){
+        Tile tile_sr;
+        bool hasLab = false;
+        for (int i = 0; i < world.Width; i++)
+        {
+            for (int j = 0; j < world.Height; j++)
+            {
+                tile_sr = world.GetTileAt(i, j);
+                if (tile_sr.Type == Tile.TileType.Lab)
+                    hasLab = true;
+            }
+        }
+        return (hasLab && (studentPopulation >= 30000) && (residentPopulation >= 10000) && (coffers >= 1000000));
+    }
+    public void addScholarship(double val){ scholarshipAllocation += val; }
+    public void addGrant(double val){ grantAllocation += val; }
+    public void addStudents(int val){ studentPopulation += val; }
+    public void addResidents(int val){ residentPopulation += val; }
+
+    public bool breakingGround() { return level == UniversityLevel.BreakingGround; }
+    public bool initialExpansion() { return level == UniversityLevel.InitialExpansion; }
+    public bool stage1() { return level == UniversityLevel.Stage1; }
+    public bool stage2() { return level == UniversityLevel.Stage2; }
+    public bool stage3() { return level == UniversityLevel.Stage3; }
 //MUTATORS
 
 	public int Coffers
