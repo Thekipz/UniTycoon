@@ -126,7 +126,9 @@ public class University
 
 	public string HUD()
 	{
-		return "Money: $" + Coffers.ToString () + "\nStudents (POP/CAP): " + studentPopulation.ToString () + "/" + studentCapacity.ToString () + "\nResidents (POP/CAP): " + residentPopulation.ToString () + "/" + residentCapacity.ToString ();
+        int studentPop = (int)studentPopulation;
+        int residentPop = (int)residentPopulation;
+        return "Money: $" + Coffers.ToString () + "\nStudents (POP/CAP): " + studentPop.ToString () + "/" + studentCapacity.ToString () + "\nResidents (POP/CAP): " + residentPop.ToString () + "/" + residentCapacity.ToString ();
 	}
 
 //MUTATORS
