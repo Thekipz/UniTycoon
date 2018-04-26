@@ -14,6 +14,7 @@ public class MainMenu : MonoBehaviour {
     }
     public void PlayGame()
     {
+ 
         if (PlayerPrefs.HasKey("save"))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
