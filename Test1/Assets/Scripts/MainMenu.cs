@@ -2,13 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VoxelBusters.NativePlugins;
 
 public class MainMenu : MonoBehaviour {
 
-	public void PlayGame()
-    {
+    public SaveManager SaveManager { get; set; }
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    public void Awake()
+    {
+        SaveManager = this.gameObject.AddComponent<SaveManager>();
+    }
+    public void PlayGame()
+    {
+        if (PlayerPrefs.HasKey("save"))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        else
+        {
+            NPBinding.UI.ShowToast("There is no saved game. Start a new game!", eToastMessageLength.SHORT);
+        }
+
 
         //TODO: Make this work.
 
@@ -24,5 +38,10 @@ public class MainMenu : MonoBehaviour {
         //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         //}
 
+    }
+
+    public void StartNewGame()
+    {
+        SaveManager.DeleteSave();
     }
 }

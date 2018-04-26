@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class that does all of the saving locic
+/// </summary>
 public class SaveManager : MonoBehaviour {
 
     public static SaveManager Instance { get; set; }
@@ -29,19 +32,20 @@ public class SaveManager : MonoBehaviour {
             saveState = Helper.Deserialize<SaveLoad>(PlayerPrefs.GetString("save"));
             Debug.Log("Loading saved file. " + saveState.ToString());
         }
-        else
-        {
-            saveState = new SaveLoad();
-            Save();
-            Debug.Log("No save file found, creating a new one!");
-        }
     }
 
     //Sets the university name and saves it
     public void SetUniversityName(string newName)
     {
+        saveState = new SaveLoad();
         saveState.univeristyName = newName;
-        PlayerPrefs.Save();
+        Save();
         Debug.Log(saveState.univeristyName + " is saved.");
+    }
+
+    //Delete save file in player prefs and start a clean save
+    public void DeleteSave()
+    {
+        PlayerPrefs.DeleteKey("save");
     }
 }

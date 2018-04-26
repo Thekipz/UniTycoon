@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
 
+//Class that Serializes and Deserializes the save file
 public static class Helper {
 
     //serialize
