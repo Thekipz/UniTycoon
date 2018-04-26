@@ -31,12 +31,15 @@ public class WorldControl : MonoBehaviour {
 		cg.blocksRaycasts = true;
 		cg.interactable = true;
 	}
+	public void updateHUD(){
+		text_money.text = university.HUD();
+	}
     // Initialize World
     void Start() {
 		Debug.Log ("Start...");
 		GameDifficulty gamediff = GameDifficulty.Normal;
 		university = new University (gamediff);
-        text_money.text = "Money: $" + university.moneyToString();
+		updateHUD ();
         world = new World(10, 10, 35);
         int scale = world.Scale;
 		showCG (uigrouptop);
@@ -139,6 +142,7 @@ public class WorldControl : MonoBehaviour {
                 Debug.LogError("TileTypeChanged - Unrecognized Tile Type.");
                 break;
         }
+		updateHUD ();
     }
 
     // Update is called once per frame
@@ -149,8 +153,8 @@ public class WorldControl : MonoBehaviour {
         {
             elapsed = elapsed % 2f;
 			university.updateUniversityVars (world);
-            text_money.text = "Money: $" + university.moneyToString();
-        }
+			updateHUD ();
+		}
         //Checks if there is a UI element in front of a tile on touch, if there is not, then selects the tile
         if (EventSystem.current.IsPointerOverGameObject())
         {

@@ -124,9 +124,9 @@ public class University
 		Debug.Log ("Stud pop/cap: "+studentPopulation.ToString()+"/"+studentCapacity.ToString()+"   Res pop/cap: "+residentPopulation.ToString()+"/"+residentCapacity.ToString()+"    coffers: "+coffers.ToString());
 	}
 
-	public string moneyToString()
+	public string HUD()
 	{
-		return Coffers.ToString();
+		return "Money: $" + Coffers.ToString () + "\nStudents (POP/CAP): " + studentPopulation.ToString () + "/" + studentCapacity.ToString () + "\nResidents (POP/CAP): " + residentPopulation.ToString () + "/" + residentCapacity.ToString ();
 	}
 
 //MUTATORS
