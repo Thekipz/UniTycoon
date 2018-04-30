@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Class that does all of the saving locic
+/// Class that does all of the saving/loading logic
 /// </summary>
 public class SaveManager : MonoBehaviour {
 
@@ -12,9 +12,16 @@ public class SaveManager : MonoBehaviour {
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-        Instance = this;
-        Load();
+        if(Instance == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            Instance = this;
+        }
+        else if(Instance != this)
+        {
+            Destroy(gameObject);
+        }
+
     }
 
     //Save the whole SaveLoad script the the player pref
@@ -30,7 +37,7 @@ public class SaveManager : MonoBehaviour {
         if(PlayerPrefs.HasKey("save"))
         {
             saveState = Helper.Deserialize<SaveLoad>(PlayerPrefs.GetString("save"));
-            Debug.Log("Loading saved file. " + saveState.ToString());
+            Debug.Log("Loading saved file. " + saveState.univeristyName);
         }
     }
 

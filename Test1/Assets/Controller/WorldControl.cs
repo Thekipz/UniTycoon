@@ -316,6 +316,50 @@ public class WorldControl : MonoBehaviour {
             
           }
 
+    //Load when when scene is enabled
+    private void OnEnable()
+    {
+        if(PlayerPrefs.HasKey("save"))
+        {
+            SaveManager.Instance.Load();
+        }
+        else //No saved data to load means this is a new game
+        {
+            //Initailize data 
+
+            //Example
+            //SaveManager.Instance.saveState.gamediff = GameDifficulty.Normal;
+            //SaveManager.Instance.saveState.university = new University(gamediff);
+
+            //SaveManager.Instance.saveState.tileGameObjectMap = new Dictionary<Tile, GameObject>();
+            ////Create a display object for all of the tiles
+            //for (int i = 0; i < world.Width; i = i + 1)
+            //{
+            //    for (int j = 0; j < world.Height; j = j + 1)
+            //    {
+            //        GameObject tile_go = new GameObject();
+            //        Tile tile_data = world.GetTileAt(i, j);
+            //        tileGameObjectMap.Add(tile_data, tile_go);
+            //        tile_go.name = "Tile_" + i + "_" + j;
+            //        tile_go.transform.localScale = new Vector3(scale, scale, scale);
+            //        tile_go.transform.position = new Vector3(world.GetTileAt(i, j).X * scale, world.GetTileAt(i, j).Y * scale, 0);
+            //        tile_sr = tile_go.AddComponent<SpriteRenderer>();
+            //        tile_sr.sprite = groundSprite;
+            //        tile_go.transform.SetParent(this.transform, true);
+            //        //This will update the tile sprite when the type is changed
+            //        tile_data.RegisterCallBack(TileTypeChanged);
+            //    }
+            //}
+
+        }
+    }
+
+    //Save data when scene is diabled
+     private void OnDisable()
+    {
+        SaveManager.Instance.Save();
+    }
+
     // Function to get tile at mouse location
     Tile ClickTile(Vector3 coord)
      {
