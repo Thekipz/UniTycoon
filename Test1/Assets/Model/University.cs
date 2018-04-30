@@ -7,7 +7,6 @@ public enum UniversitySize {Tiny,Small,Medium,Large}
 public enum GameDifficulty {Easy,Normal,Hard}
 public enum UniversityLevel {BreakingGround,InitialExpansion,Stage1,Stage2,Stage3}
 
-[Serializable]
 public class University
 {
 //CLASS VARS

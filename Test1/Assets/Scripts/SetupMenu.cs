@@ -9,10 +9,16 @@ public class SetupMenu : MonoBehaviour {
 
     public Text Input;
     public string uniName;
+    public GameObject MainMenu;
+    public SaveManager SaveManager;
 
+    public void Awake()
+    {
+        SaveManager = MainMenu.GetComponent<MainMenu>().SaveManager;
+    }
     public void OnClickOkButton()
     {
-        SaveManager.Instance.saveState.univeristyName = uniName;
+        SaveManager.SetUniversityName(uniName);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         NPBinding.UI.ShowToast("Welcome to " + uniName + "!", eToastMessageLength.SHORT);
     }
