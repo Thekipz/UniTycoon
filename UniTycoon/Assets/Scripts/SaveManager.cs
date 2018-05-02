@@ -30,14 +30,19 @@ public class SaveManager : MonoBehaviour {
         if(PlayerPrefs.HasKey("save"))
         {
             saveState = Helper.Deserialize<SaveLoad>(PlayerPrefs.GetString("save"));
-            Debug.Log("Loading saved file. " + saveState.ToString());
+            //Debug.Log("Loading saved file. " + saveState.ToString());
+        }
+        else
+        {
+            saveState = new SaveLoad();
+            saveState.isNew = true;
         }
     }
 
     //Sets the university name and saves it
     public void SetUniversityName(string newName)
     {
-        saveState = new SaveLoad();
+        Load();
         saveState.univeristyName = newName;
         Save();
         Debug.Log(saveState.univeristyName + " is saved.");

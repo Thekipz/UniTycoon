@@ -50,9 +50,9 @@ public class University
 
 //CONSTRUCTOR
 
-	public University (GameDifficulty diff)
+	public University ()
 	{
-		difficulty = diff;
+        difficulty = GameDifficulty.Normal;
 		level = UniversityLevel.BreakingGround;
 		size = UniversitySize.Tiny;
 		EASY_MOD = 1.5;
@@ -64,7 +64,7 @@ public class University
 		YEAR = 12 * MONTH;
 
 		double START_COFFERS = 150000.00;
-		switch(diff)
+		switch(difficulty)
 		{
 		case GameDifficulty.Easy:
 			coffers = START_COFFERS * EASY_MOD;
@@ -127,7 +127,7 @@ public class University
 			coffers = coffers + activeAlumPopulation * 0.01 / MONTH;
 			break;
 		}
-		Debug.Log ("Stud pop/cap: "+studentPopulation.ToString()+"/"+studentCapacity.ToString()+"   Res pop/cap: "+residentPopulation.ToString()+"/"+residentCapacity.ToString()+"    coffers: "+coffers.ToString());
+		//Debug.Log ("Stud pop/cap: "+studentPopulation.ToString()+"/"+studentCapacity.ToString()+"   Res pop/cap: "+residentPopulation.ToString()+"/"+residentCapacity.ToString()+"    coffers: "+coffers.ToString());
 	}
 
 	public string HUD()
@@ -335,6 +335,9 @@ public class University
         studentGrowthRate = studentGrowthRate * (1 + ((double)money / coffers));
         residentGrowthRate = residentGrowthRate * (1 + ((double)money / coffers));
         coffers = coffers - (double)money;
+    }
+    public University cloneThis(){
+        return (University)this.MemberwiseClone();
     }
 //MUTATORS
 

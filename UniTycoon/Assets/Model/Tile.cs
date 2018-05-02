@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Tile {
-    
-    public enum TileType { Empty , Building, Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin };
-    TileType type = TileType.Empty;
-    
-    World world;
-    int x, y;
-	int studentCapacity,residentCapacity;
-    Action<Tile> cbTileTypeChanged;
+public class Tile
+{
 
+    public enum TileType { Empty, Building, Class, Gym, Lab, Cafe, Library, Parking, Stadium, Admin };
+    TileType type = TileType.Empty;
+
+    int x, y;
+    int studentCapacity, residentCapacity;
+    Action<Tile> cbTileTypeChanged;
 
     /*  Used in conjunction with TileTypeChanged 
      * in WorldControler to update sprites
@@ -21,17 +20,28 @@ public class Tile {
     {
         cbTileTypeChanged = callback;
     }
- 
+
     //Tile Constructor
-     public Tile(World world, int x, int y)
+    public Tile(int x, int y,TileType tileType)
     {
-        this.world = world;
         this.x = x;
         this.y = y;
-		studentCapacity = 0;
-		residentCapacity = 0;
+        type = tileType;
+        studentCapacity = 0;
+        residentCapacity = 0;
     }
-
+    public Tile(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+        type = TileType.Empty;
+        studentCapacity = 0;
+        residentCapacity = 0;
+    }
+    public Tile()
+    {
+        
+    }
     /*
      * Mutators for private tile variables
      */
@@ -55,6 +65,9 @@ public class Tile {
         {
             return x;
         }
+        set{
+            x = value;
+        }
     }
 
     public int Y
@@ -63,6 +76,9 @@ public class Tile {
         {
             return y;
         }
+        set{
+            y = value;
+        }
     }
 	public int StudentCapacity
 	{
@@ -70,9 +86,7 @@ public class Tile {
 			return studentCapacity;
 		}
 		set{
-			world.addStudentCapacity (-1*studentCapacity);
 			studentCapacity = value;
-			world.addStudentCapacity (studentCapacity);
 
 		}
 	}
@@ -82,9 +96,7 @@ public class Tile {
 			return residentCapacity;
 		}
 		set{ 
-			world.addResidentCapacity (-1 * residentCapacity);
 			residentCapacity = value;
-			world.addResidentCapacity (residentCapacity);
 		}
 	}
 

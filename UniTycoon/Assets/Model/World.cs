@@ -9,7 +9,7 @@ public class World {
 	int totalStudentCapacity,totalResidentCapacity;
     //Default world constructor, width and height are the number of tiles on map
 	//scale changes the size of tiles
-	public World(int width = 10, int height = 10, int scale=1)
+    public World(int width = 10, int height = 10, int scale=1)
     {
         this.Width = width;
         this.Height = height;
@@ -19,7 +19,24 @@ public class World {
 
         for( int i = 0; i < width; i++){
             for(int j = 0; j < height; j++) {
-                tiles[i, j] = new Tile(this, i, j);
+                tiles[i, j] = new Tile(i, j,Tile.TileType.Empty);
+            }
+        }
+        Debug.Log("World created with " + (width * height) + "tiles");
+    }
+    public World()
+    {
+        width = 10;
+        height = 10;
+        scale = 35;
+
+        tiles = new Tile[width, height];
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                tiles[i, j] = new Tile(i, j);
             }
         }
         Debug.Log("World created with " + (width * height) + "tiles");
@@ -32,7 +49,7 @@ public class World {
             Debug.LogError("Tile ("+x+","+ y+") is out of range.");
             return null;
         }
-        Debug.Log("Tile (" + x + "," + y + ")");
+        Debug.Log("Tile (" + x + "," + y + ") Type: " + tiles[x, y].Type);
         return tiles[x, y];
     }
 	public void addStudentCapacity(int cap)
@@ -43,10 +60,25 @@ public class World {
 	{
 		totalResidentCapacity += cap;
 	}
-
+    public void setTileData(Tile[,] newTiles)
+    {
+        for (int i = 0;i < Width;i++){
+            for (int j = 0; j < Height;j++){
+                tiles[i, j] = newTiles[i, j];
+            }
+        }
+    }
 
 
     //Mutators
+    public Tile[,] Tiles{
+        get{
+            return tiles;
+        }
+        set{
+            tiles = value;
+        }
+    }
     public int Width{
         get{
             return width;

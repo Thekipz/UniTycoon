@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class WorldControl : MonoBehaviour {
 
-
+    public SaveLoad saveState;
     public Text text_money,adminf1,adminf2,adminf3,hintCurrLvl,hintNxtLvl,hintReq1,hintReq2,hintReq3,hintReq4,advanceButtonTxt;
-    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup,randompanel;
+    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup,randompanel,ingameMenu,options;
     public float elapsed = 0f;
     public float timeInterval = 2f;
     public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
@@ -27,11 +28,35 @@ public class WorldControl : MonoBehaviour {
 	
     // Initialize World
     void Start() {
+        if (PlayerPrefs.HasKey("save")){   
+            saveState = Helper.Deserialize<SaveLoad>(PlayerPrefs.GetString("save"));    
+        }else{
+            saveState = new SaveLoad();
+        }
+
+        if(saveState.isNew){
+            university = new University();
+            world = new World(10, 10, 35);
+        }else{
+            university = saveState.university.cloneThis();
+            world = new World(saveState.worldWidth, saveState.worldHeight, saveState.worldScale);
+            world.TotalStudentCapacity = saveState.worldStudCap;
+            world.TotalResidentCapacity = saveState.worldResCap;
+            Tile[,] newTiles = new Tile[world.Width, world.Height];
+            for (int i = 0; i < world.Width; i++)
+            {
+                for (int j = 0; j < world.Height; j++)
+                {
+                    newTiles[i, j] = saveState.tiles[i + (world.Height * j)];
+                    newTiles[i, j].X = i;
+                    newTiles[i, j].Y = j;
+                }
+            }
+            world.setTileData(newTiles);
+        }
+
 		Debug.Log ("Start...");
-		GameDifficulty gamediff = GameDifficulty.Normal;
-		university = new University (gamediff);
 		updateHUD ();
-        world = new World(10, 10, 35);
         int scale = world.Scale;
 		showCG (uigrouptop);
 		showCG (uigroupbottom);
@@ -40,6 +65,8 @@ public class WorldControl : MonoBehaviour {
         hideCG(funds_message);
         hideCG(admin_menu);
         hideCG(hintpopup);
+        hideCG(ingameMenu);
+        //hideCG(options);
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
         //Create a display object for all of the tiles
@@ -52,8 +79,9 @@ public class WorldControl : MonoBehaviour {
                 tile_go.transform.localScale = new Vector3(scale, scale, scale);
                 tile_go.transform.position = new Vector3(world.GetTileAt(i, j).X * scale, world.GetTileAt(i, j).Y * scale, 0);
                 tile_sr = tile_go.AddComponent<SpriteRenderer>();
-                tile_sr.sprite = groundSprite;
+                tile_sr.sprite = spriteForTileType(tile_data.Type);
                 tile_go.transform.SetParent(this.transform, true);
+                TileTypeChanged(tile_data);
                 //This will update the tile sprite when the type is changed
                 tile_data.RegisterCallBack(TileTypeChanged);
             }
@@ -80,7 +108,6 @@ public class WorldControl : MonoBehaviour {
         switch (tile_sr.Type)
         {
 			case Tile.TileType.Empty:
-                
 				tile_go.GetComponent<SpriteRenderer> ().sprite = groundSprite;
 				tile_sr.StudentCapacity = 0;
 				tile_sr.ResidentCapacity = 0;
@@ -362,6 +389,43 @@ public class WorldControl : MonoBehaviour {
         }
     }
 
+    public void openIngameMenu(){
+        showCG(ingameMenu);
+    }
+    public void openOptions()
+    {
+        showCG(options);
+    }
+    public void closeOptions(){
+        hideCG(options);
+    }
+    public void saveGame()
+    {
+        saveState.university = university.cloneThis();
+        saveState.worldScale = world.Scale;
+        saveState.worldWidth = world.Width;
+        saveState.worldHeight = world.Height;
+        saveState.worldResCap = world.TotalResidentCapacity;
+        saveState.worldStudCap = world.TotalStudentCapacity;
+        saveState.tiles = new Tile[world.Width * world.Height];
+        for (int i = 0; i < world.Width; i++){
+            for (int j = 0;j < world.Height; j++){
+                saveState.tiles[i + (world.Height * j)] = world.GetTileAt(i, j);
+            }
+        }
+        saveState.isNew = false;
+        PlayerPrefs.SetString("save", Helper.Serialize<SaveLoad>(saveState));
+    }
+    public void quitToHS(){
+        Application.Quit();
+    }
+    public void quitToMenu(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
+    public void closeIngameMenu(){
+        hideCG(ingameMenu);
+    }
+
     public void AMF1changed(){
         amf1val = int.Parse(AMF1.text);
         int total = (int)((double)amf1val * university.TuitionRate);
@@ -406,6 +470,7 @@ public class WorldControl : MonoBehaviour {
        
         return world.GetTileAt(x/world.Scale, y/world.Scale);
     }
+   
     //Called on "Build" button click
     public void SetMode_Build()
     {
@@ -562,5 +627,33 @@ public class WorldControl : MonoBehaviour {
         }
 		hideCG (buildMenu);
     }
-
+    public Sprite spriteForTileType(Tile.TileType type)
+    {
+        switch (type)
+        {
+            case Tile.TileType.Empty:
+                return groundSprite;
+            case Tile.TileType.Building:
+                return buildingSprite;
+            case Tile.TileType.Class:
+                return classSprite; 
+            case Tile.TileType.Gym:
+                return gymSprite;
+            case Tile.TileType.Lab:
+                return labSprite;
+            case Tile.TileType.Cafe:
+                return cafeSprite;
+            case Tile.TileType.Library:
+                return librarySprite;
+            case Tile.TileType.Parking:
+                return parkingSprite;
+            case Tile.TileType.Stadium:
+                return stadiumSprite;
+            case Tile.TileType.Admin:
+                return adminSprite;
+            default:
+                Debug.LogError("Invalid tile type");
+                return groundSprite;
+        }
+    }
 }
