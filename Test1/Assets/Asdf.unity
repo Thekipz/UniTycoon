@@ -8718,6 +8718,7 @@ MonoBehaviour:
   funds_message: {fileID: 1415425597}
   admin_menu: {fileID: 1320990094}
   hintpopup: {fileID: 17390479}
+  randompanel: {fileID: 0}
   elapsed: 0
   timeInterval: 2
   groundSprite: {fileID: 21300000, guid: 36c746688a0605846a7c8d1c14129a88, type: 3}

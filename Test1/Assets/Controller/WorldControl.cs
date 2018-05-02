@@ -7,7 +7,7 @@ public class WorldControl : MonoBehaviour {
 
 
     public Text text_money,adminf1,adminf2,adminf3,hintCurrLvl,hintNxtLvl,hintReq1,hintReq2,hintReq3,hintReq4,advanceButtonTxt;
-    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup;
+    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup,randompanel;
     public float elapsed = 0f;
     public float timeInterval = 2f;
     public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
