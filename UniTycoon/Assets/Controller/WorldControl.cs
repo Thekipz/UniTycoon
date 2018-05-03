@@ -8,8 +8,8 @@ public class WorldControl : MonoBehaviour {
 
     //public SaveLoad saveState;
     public SaveManager saveManager;
-    public Text text_money,adminf1,adminf2,adminf3,hintCurrLvl,hintNxtLvl,hintReq1,hintReq2,hintReq3,hintReq4,advanceButtonTxt;
-    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup,randompanel,ingameMenu,options;
+    public Text text_money,adminf1,adminf2,adminf3,hintCurrLvl,hintNxtLvl,hintReq1,hintReq2,hintReq3,hintReq4,advanceButtonTxt,infoText;
+    public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup,randompanel,ingameMenu,options,winScreen,loseScreen;
     public float elapsed = 0f;
     public float timeInterval = 2f;
     public Sprite groundSprite, buildingSprite, classSprite, gymSprite, labSprite, cafeSprite, librarySprite, parkingSprite, stadiumSprite, adminSprite;
@@ -72,7 +72,8 @@ public class WorldControl : MonoBehaviour {
         hideCG(admin_menu);
         hideCG(hintpopup);
         hideCG(ingameMenu);
-        //hideCG(options);
+        hideCG(winScreen);
+        hideCG(loseScreen);
 
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
         //Create a display object for all of the tiles
@@ -179,6 +180,12 @@ public class WorldControl : MonoBehaviour {
             tallyMapVars();
             elapsed = elapsed % timeInterval;
 			university.updateUniversityVars (world);
+            infoText.text = university.budget();
+            if(university.loss()){
+                lose();
+            }else if(university.victory()){
+                win();
+            }
 		}
         //Checks if there is a UI element in front of a tile on touch, if there is not, then selects the tile
         if (EventSystem.current.IsPointerOverGameObject())
@@ -655,6 +662,18 @@ public class WorldControl : MonoBehaviour {
         }
         world.TotalResidentCapacity = totResCap;
         world.TotalStudentCapacity = totPopCap;
+    }
+    public void lose(){
+        showCG(loseScreen);
+        StartCoroutine(quitIt());
+    }
+    public void win(){
+        showCG(winScreen);
+        StartCoroutine(quitIt());
+    }
+    public IEnumerator quitIt(){
+        yield return new WaitForSecondsRealtime(10);
+        quitToMenu();
     }
 }
     

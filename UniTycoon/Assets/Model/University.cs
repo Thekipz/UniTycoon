@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 public enum GameDifficulty {Easy,Normal,Hard}
-public enum UniversityLevel {BreakingGround,InitialExpansion,Stage1,Stage2,Stage3}
+public enum UniversityLevel {BreakingGround,InitialExpansion,Stage1,Stage2,Stage3,Victory,Loss}
 
 public class University
 {
@@ -110,6 +110,8 @@ public class University
 		case GameDifficulty.Hard:
 			break;
 		}
+        if (coffers < 0)
+            lose();
 	}
 
 	public string HUD()
@@ -118,6 +120,10 @@ public class University
         int residentPop = (int)residentPopulation;
         return "Time: " + Time() + "\nLevel: " + LevelToString() + "\nMoney: $" + Coffers.ToString() + "\nStudents (POP/CAP): " + studentPop.ToString() + "/" + studentCapacity.ToString() + "\nResidents (POP/CAP): " + residentPop.ToString() + "/" + residentCapacity.ToString();
 	}
+
+    public string budget(){
+        return "Budget:\nTotal money: "+coffers+"\nTotal costs (per clock): "+(int)((studentUpkeep / YEAR) + (residentUpkeep / MONTH) + (scholarshipAllocation / YEAR) + (grantAllocation / YEAR))+"\nStudent upkeep (yearly): "+studentUpkeep+"\nResident upkeep (monthly)"+residentUpkeep+"\nScholarship allocation (yearly): "+scholarshipAllocation+"\nGrant allocation (yearly): "+grantAllocation+"\n\nTotal revenue (per clock): "+(int)((tuitionRate / YEAR)+(rentRate / MONTH))+"\nTuition (yearly): "+tuitionRate+"\nRent (monthly): "+rentRate;
+    }
 
     private void clock(){
         time++;
@@ -135,6 +141,10 @@ public class University
                 return "Stage 2";
             case UniversityLevel.Stage3:
                 return "Stage 3";
+            case UniversityLevel.Victory:
+                return "Victory!";
+            case UniversityLevel.Loss:
+                return "Loss!";
         }
         return "N/A";
     }
@@ -186,7 +196,8 @@ public class University
                 }break;
             case UniversityLevel.Stage3:
                 if(VictoryReqsMet(world)){
-                    //VICTORY
+                    level = UniversityLevel.Victory;
+                    //advance
                 } else{
                     Debug.Log("Requirements to advance not yet met");
                 }break;
@@ -300,6 +311,8 @@ public class University
     public bool stage1() { return level == UniversityLevel.Stage1; }
     public bool stage2() { return level == UniversityLevel.Stage2; }
     public bool stage3() { return level == UniversityLevel.Stage3; }
+    public bool victory() { return level == UniversityLevel.Victory; }
+    public bool loss() { return level == UniversityLevel.Loss; }
 
     public void activateTimeAcc(){
         HOUR = 0.25/100;
@@ -318,9 +331,11 @@ public class University
         residentGrowthRate = residentGrowthRate * (1 + ((double)money / coffers));
         coffers = coffers - (double)money;
     }
-    public University cloneThis(){
-        return (University)this.MemberwiseClone();
+    public void lose(){
+        level = UniversityLevel.Loss;
     }
+
+
 //MUTATORS
 
 	public int Coffers{
