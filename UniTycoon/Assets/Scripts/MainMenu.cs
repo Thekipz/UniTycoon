@@ -63,4 +63,10 @@ public class MainMenu : MonoBehaviour {
     {
         audioMixer.SetFloat("volume", sliderVolume);
     }
+
+    public void QuitGame()
+    {
+        Debug.Log("QUIT: Main Menu");
+        Application.Quit();
+    }
 }
