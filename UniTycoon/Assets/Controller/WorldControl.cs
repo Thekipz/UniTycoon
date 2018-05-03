@@ -285,9 +285,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Stadium:
-                            if (this.university.Coffers >= 1)
+                            if (this.university.Coffers >= 1000000)
                             {
-                                this.university.Coffers = this.university.Coffers - 1;
+                                this.university.Coffers = this.university.Coffers - 1000000;
                                 select.Type = Tile.TileType.Stadium;
                                 Debug.Log("Stadium placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -298,9 +298,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Parking:
-                            if (this.university.Coffers >= 1)
+                            if (this.university.Coffers >= 500000)
                             {
-                                this.university.Coffers = this.university.Coffers - 1;
+                                this.university.Coffers = this.university.Coffers - 500000;
                                 select.Type = Tile.TileType.Parking;
                                 Debug.Log("Parking placed at X:" + select.X + ", Y: " + select.Y);
                             }
@@ -311,9 +311,9 @@ public class WorldControl : MonoBehaviour {
                             }
                             break;
                         case BuildingType.Lab:
-                            if (this.university.Coffers >= 1)
+                            if (this.university.Coffers >= 10000000)
                             {
-                                this.university.Coffers = this.university.Coffers - 1;
+                                this.university.Coffers = this.university.Coffers - 10000000;
                                 select.Type = Tile.TileType.Lab;
                                 Debug.Log("Lab placed at X:" + select.X + ", Y: " + select.Y);
                             }
