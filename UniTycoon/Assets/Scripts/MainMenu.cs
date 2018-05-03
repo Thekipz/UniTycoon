@@ -45,4 +45,10 @@ public class MainMenu : MonoBehaviour {
     {
         SaveManager.DeleteSave();
     }
+
+    public void QuitGame()
+    {
+        Debug.Log("QUIT");
+        Application.Quit();
+    }
 }
