@@ -49,7 +49,7 @@ public class World {
             Debug.LogError("Tile ("+x+","+ y+") is out of range.");
             return null;
         }
-        Debug.Log("Tile (" + x + "," + y + ") Type: " + tiles[x, y].Type);
+        //Debug.Log("Tile (" + x + "," + y + ") Type: " + tiles[x, y].Type);
         return tiles[x, y];
     }
 	public void addStudentCapacity(int cap)

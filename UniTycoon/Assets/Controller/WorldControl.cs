@@ -40,7 +40,8 @@ public class WorldControl : MonoBehaviour {
         }
         else //If there is saved data
         {
-            university = saveManager.saveState.university.cloneThis();
+            university = saveManager.saveState.university;
+            Debug.Log(saveManager.saveState.university.HUD());
             world = new World(saveManager.saveState.worldWidth, saveManager.saveState.worldHeight, saveManager.saveState.worldScale);
             world.TotalStudentCapacity = saveManager.saveState.worldStudCap;
             world.TotalResidentCapacity = saveManager.saveState.worldResCap;
@@ -59,33 +60,7 @@ public class WorldControl : MonoBehaviour {
     }
     // Initialize World
     void Start() {
-        //if (PlayerPrefs.HasKey("save")){   
-        //    saveState = Helper.Deserialize<SaveLoad>(PlayerPrefs.GetString("save"));    
-        //}else{
-        //    saveState = new SaveLoad();
-        //}
-
-        //if(saveManager.saveState.isNew){
-        //    university = new University();
-        //    world = new World(10, 10, 35);
-        //}else{
-        //    university = saveManager.saveState.university.cloneThis();
-        //    world = new World(saveManager.saveState.worldWidth, saveManager.saveState.worldHeight, saveManager.saveState.worldScale);
-        //    world.TotalStudentCapacity = saveManager.saveState.worldStudCap;
-        //    world.TotalResidentCapacity = saveManager.saveState.worldResCap;
-        //    Tile[,] newTiles = new Tile[world.Width, world.Height];
-        //    for (int i = 0; i < world.Width; i++)
-        //    {
-        //        for (int j = 0; j < world.Height; j++)
-        //        {
-        //            newTiles[i, j] = saveManager.saveState.tiles[i + (world.Height * j)];
-        //            newTiles[i, j].X = i;
-        //            newTiles[i, j].Y = j;
-        //        }
-        //    }
-        //    world.setTileData(newTiles);
-        //}
-
+      
 		Debug.Log ("Start...");
 		updateHUD ();
         int scale = world.Scale;
@@ -201,6 +176,7 @@ public class WorldControl : MonoBehaviour {
         elapsed += Time.deltaTime;
         if(elapsed >= timeInterval)
         {
+            tallyMapVars();
             elapsed = elapsed % timeInterval;
 			university.updateUniversityVars (world);
 		}
@@ -359,31 +335,22 @@ public class WorldControl : MonoBehaviour {
                 switch (select.Type)
                 {
                     case Tile.TileType.Building:
-                        
                         break;
                     case Tile.TileType.Class:
-                        
                         break;
                     case Tile.TileType.Gym:
-                        
                         break;
                     case Tile.TileType.Library:
-                        
                         break;
                     case Tile.TileType.Cafe:
-                        
                         break;
-                    case Tile.TileType.Admin:
-                        showCG(admin_menu);
+                    case Tile.TileType.Admin: showCG(admin_menu);
                         break;
                     case Tile.TileType.Stadium:
-                       
                         break;
                     case Tile.TileType.Parking:
-                        
                         break;
                     case Tile.TileType.Lab:
-                       
                         break;
                 }
             }
@@ -394,19 +361,15 @@ public class WorldControl : MonoBehaviour {
 
     //UTILITY FUNCTIONS AND CALLBACKS
 
-    public void hideCG(CanvasGroup cg)
-    {
+    public void hideCG(CanvasGroup cg){
         cg.alpha = 0;
         cg.blocksRaycasts = false;
         cg.interactable = false;
-
     }
-    public void showCG(CanvasGroup cg)
-    {
+    public void showCG(CanvasGroup cg){
         cg.alpha = 1;
         cg.blocksRaycasts = true;
         cg.interactable = true;
-
     }
     public void updateHUD(){ text_money.text = university.HUD(); }
 
@@ -430,38 +393,19 @@ public class WorldControl : MonoBehaviour {
     public void closeOptions(){
         hideCG(options);
     }
-    //public void saveGame()
-    //{
-    //    saveState.university = university.cloneThis();
-    //    saveState.worldScale = world.Scale;
-    //    saveState.worldWidth = world.Width;
-    //    saveState.worldHeight = world.Height;
-    //    saveState.worldResCap = world.TotalResidentCapacity;
-    //    saveState.worldStudCap = world.TotalStudentCapacity;
-    //    saveState.tiles = new Tile[world.Width * world.Height];
-    //    for (int i = 0; i < world.Width; i++){
-    //        for (int j = 0;j < world.Height; j++){
-    //            saveState.tiles[i + (world.Height * j)] = world.GetTileAt(i, j);
-    //        }
-    //    }
-    //    saveState.isNew = false;
-    //    PlayerPrefs.SetString("save", Helper.Serialize<SaveLoad>(saveState));
-    //}
-
-
+  
     public void OnDisable()
     {
-        saveManager.saveState.university = university.cloneThis();
+        saveManager.saveState.university = university;
+        Debug.Log(saveManager.saveState.university.HUD()+"\n\n"+university.HUD());
         saveManager.saveState.worldScale = world.Scale;
         saveManager.saveState.worldWidth = world.Width;
         saveManager.saveState.worldHeight = world.Height;
         saveManager.saveState.worldResCap = world.TotalResidentCapacity;
         saveManager.saveState.worldStudCap = world.TotalStudentCapacity;
         saveManager.saveState.tiles = new Tile[world.Width * world.Height];
-        for (int i = 0; i < world.Width; i++)
-        {
-            for (int j = 0; j < world.Height; j++)
-            {
+        for (int i = 0; i < world.Width; i++){
+            for (int j = 0; j < world.Height; j++){
                 saveManager.saveState.tiles[i + (world.Height * j)] = world.GetTileAt(i, j);
             }
         }
@@ -473,6 +417,7 @@ public class WorldControl : MonoBehaviour {
         Application.Quit();
     }
     public void quitToMenu(){
+        OnDisable();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
     public void closeIngameMenu(){
@@ -647,35 +592,25 @@ public class WorldControl : MonoBehaviour {
     {
         switch (type)
         {
-            case 1:
-                this.buildingType = BuildingType.Dorm;
+            case 1: this.buildingType = BuildingType.Dorm;
                 break;
-            case 2:
-                this.buildingType = BuildingType.Class;
+            case 2: this.buildingType = BuildingType.Class;
                 break;
-            case 3:
-                this.buildingType = BuildingType.Gym;
+            case 3: this.buildingType = BuildingType.Gym;
                 break;
-            case 4:
-                this.buildingType = BuildingType.Library;
+            case 4: this.buildingType = BuildingType.Library;
                 break;
-            case 5:
-                this.buildingType = BuildingType.Cafe;
+            case 5: this.buildingType = BuildingType.Cafe;
                 break;
-            case 6:
-                this.buildingType = BuildingType.Admin;
+            case 6: this.buildingType = BuildingType.Admin;
                 break;
-            case 7:
-                this.buildingType = BuildingType.Stadium;
+            case 7: this.buildingType = BuildingType.Stadium;
                 break;
-            case 8:
-                this.buildingType = BuildingType.Parking;
+            case 8: this.buildingType = BuildingType.Parking;
                 break;
-            case 9:
-                this.buildingType = BuildingType.Lab;
+            case 9: this.buildingType = BuildingType.Lab;
                 break;
-            default:
-                this.buildingType = BuildingType.None;
+            default: this.buildingType = BuildingType.None;
                 break;
         }
 		hideCG (buildMenu);
@@ -709,4 +644,17 @@ public class WorldControl : MonoBehaviour {
                 return groundSprite;
         }
     }
+    public void tallyMapVars(){
+        int totResCap = 0;
+        int totPopCap = 0;
+        for (int i = 0; i < world.Width; i++){
+            for (int j = 0; j < world.Height; j++){
+                totResCap += world.GetTileAt(i, j).ResidentCapacity;
+                totPopCap += world.GetTileAt(i, j).StudentCapacity;
+            }
+        }
+        world.TotalResidentCapacity = totResCap;
+        world.TotalStudentCapacity = totPopCap;
+    }
 }
+    

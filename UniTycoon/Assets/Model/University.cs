@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum UniversitySize {Tiny,Small,Medium,Large}
 public enum GameDifficulty {Easy,Normal,Hard}
 public enum UniversityLevel {BreakingGround,InitialExpansion,Stage1,Stage2,Stage3}
 
@@ -11,33 +10,25 @@ public class University
 {
 //CLASS VARS
 
-	UniversitySize size;//----------classes of studentPopulation
 	GameDifficulty difficulty;//----game difficulty, adjusts most parameters
 	UniversityLevel level;//--------stage in game progression
 
-	//double academicNotoriety;
-	//double facultyQuality;
-	//double academicBldgsQuality;
+	int residentCapacity;//----------total capacity for residents
+	double residentPopulation;//-----population of rent payers
+	int studentCapacity;//-----------total capacity for students
+	double studentPopulation;//------population of tuition payers
+	double studentGrowthFactor;//---intermediate variable for logistic function
+	double studentGrowthRate;//-----max percentage growth rate for students
+	double residentGrowthFactor;//--intermediate variable for logistic function
+	double residentGrowthRate;//----max percentage growth rate for residents
 
-	double amenitiesQuantifier;
-
-	int residentCapacity;
-	double residentPopulation;//-------population of rent payers
-	int studentCapacity;
-	double studentPopulation;//--------population of tuition payers
-	int activeAlumPopulation;//-----population of donating alums (grows as notoriety grows)
-
-	double studentGrowthFactor;
-	double studentGrowthRate;
-	double residentGrowthFactor;
-	double residentGrowthRate;
 	double coffers;//---------------total player money in bank/wallet basic score
-	double tuitionRate;//-----------tuition charged per student per update
-	double rentRate;//--------------rent charged per resident per update
+	double tuitionRate;//-----------tuition charged per student per ingame year
+	double rentRate;//--------------rent charged per resident per ingame month
 	double scholarshipAllocation;//-money allocated to scholarships (deducted from tuition revenue)
 	double grantAllocation;//-------money allocated to research grants (deducted from tuition revenue)
-	//double debt;//------------------total debt
-	//double debtInterestRate;//------interest charged anually on debt
+    double studentUpkeep;//---------cost of paying for academic buildings/staff/students
+    double residentUpkeep;//--------cost of upkeep for residential buildings
 
 	double EASY_MOD;
 	double NORM_MOD;
@@ -54,7 +45,6 @@ public class University
 	{
         difficulty = GameDifficulty.Normal;
 		level = UniversityLevel.BreakingGround;
-		size = UniversitySize.Tiny;
 		EASY_MOD = 1.5;
 		NORM_MOD = 1.0;
 		HARD_MOD = 0.6;
@@ -76,15 +66,11 @@ public class University
 			coffers = START_COFFERS * HARD_MOD;
 			break;
 		}
-		//academicNotoriety = 0;
-		//facultyQuality = 0;
-		//academicBldgsQuality = 0;
 
 		residentCapacity = 0;
 		residentPopulation = 0;
 		studentCapacity = 0;
 		studentPopulation = 0;
-		activeAlumPopulation = 0;
 
 		studentGrowthRate = 0.5; //Month
         studentGrowthFactor = 0;
@@ -94,8 +80,8 @@ public class University
 		rentRate = 500; //Month
 		scholarshipAllocation = 0; //Year
 		grantAllocation = 0; //Year
-                             //debt = 100000;
-                             //debtInterestRate = 0.05 / YEAR;
+        studentUpkeep = 5000; //Year
+        residentUpkeep = 200; //Month 
 
         time = 0;
 	}
@@ -113,34 +99,30 @@ public class University
             studentPopulation = studentPopulation + studentGrowthFactor;
             residentGrowthFactor = (residentGrowthRate / MONTH) * residentPopulation * ((residentCapacity - residentPopulation) / residentCapacity);
             residentPopulation = residentPopulation + residentGrowthFactor;
-            coffers = coffers + (tuitionRate / YEAR * studentPopulation) + (rentRate / MONTH * residentPopulation) - (scholarshipAllocation / YEAR) - (grantAllocation / YEAR);
+            coffers = coffers + (((tuitionRate / YEAR) - (studentUpkeep / YEAR)) * studentPopulation) + (((rentRate / MONTH) - (residentUpkeep / MONTH)) * residentPopulation) - (scholarshipAllocation / YEAR) - (grantAllocation / YEAR);
         }
 		switch(difficulty)
 		{
 		case GameDifficulty.Easy:
-			coffers = coffers + activeAlumPopulation * 10 / MONTH;
 			break;
 		case GameDifficulty.Normal:
-			coffers = coffers + activeAlumPopulation * 1 / MONTH;
 			break;
 		case GameDifficulty.Hard:
-			coffers = coffers + activeAlumPopulation * 0.01 / MONTH;
 			break;
 		}
-		//Debug.Log ("Stud pop/cap: "+studentPopulation.ToString()+"/"+studentCapacity.ToString()+"   Res pop/cap: "+residentPopulation.ToString()+"/"+residentCapacity.ToString()+"    coffers: "+coffers.ToString());
 	}
 
 	public string HUD()
 	{
         int studentPop = (int)studentPopulation;
         int residentPop = (int)residentPopulation;
-        return "Time: " + Time() + "\nLevel: " + Level() + "\nMoney: $" + Coffers.ToString() + "\nStudents (POP/CAP): " + studentPop.ToString() + "/" + studentCapacity.ToString() + "\nResidents (POP/CAP): " + residentPop.ToString() + "/" + residentCapacity.ToString();
+        return "Time: " + Time() + "\nLevel: " + LevelToString() + "\nMoney: $" + Coffers.ToString() + "\nStudents (POP/CAP): " + studentPop.ToString() + "/" + studentCapacity.ToString() + "\nResidents (POP/CAP): " + residentPop.ToString() + "/" + residentCapacity.ToString();
 	}
 
     private void clock(){
         time++;
     }
-    private string Level(){
+    public string LevelToString(){
         switch(level)
         {
             case UniversityLevel.BreakingGround:
@@ -341,19 +323,15 @@ public class University
     }
 //MUTATORS
 
-	public int Coffers
-	{
+	public int Coffers{
 		get{ 
 			return (int)coffers;	
 		}
         set{
             coffers = value;
         }
-   
 	}
-
-    public double ScholarshipAllocation
-    {
+    public double ScholarshipAllocation{
         get{
             return scholarshipAllocation;
         }
@@ -361,8 +339,7 @@ public class University
             scholarshipAllocation = value;
         }
     }
-    public double GrantAllocation
-    {
+    public double GrantAllocation{
         get{
             return grantAllocation;
         }
@@ -370,16 +347,54 @@ public class University
             grantAllocation = value;
         }
     }
-    public double TuitionRate
-    {
+    public double TuitionRate{
         get{
             return tuitionRate;
         }
     }
-    public double RentRate
-    {
+    public double RentRate{
         get{
             return rentRate;
+        }
+    }
+    public int StudentCapacity{
+        get{
+            return studentCapacity;
+        }
+        set{
+            studentCapacity = value;
+        }
+    }
+    public double StudentPopulation{
+        get{
+            return studentPopulation;
+        }
+        set{
+            studentPopulation = value;
+        }
+    }
+    public int ResidentCapacity{
+        get{
+            return residentCapacity;
+        }
+        set{
+            residentCapacity = value;
+        }
+    }
+    public double ResidentPopulation{
+        get{
+            return residentPopulation;
+        }
+        set{
+            residentPopulation = value;
+        }
+    }
+    public UniversityLevel Level{
+        get{
+            return level;
+        }
+        set{
+            level = value;
         }
     }
 }
