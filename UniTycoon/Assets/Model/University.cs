@@ -88,7 +88,8 @@ public class University
 
 //METHODS
 
-	public void updateUniversityVars (World world)
+
+	public void updateUniversityVars (World world) //run growth functions and do accounting
 	{
         clock();
 		studentCapacity = world.TotalStudentCapacity;
@@ -114,6 +115,7 @@ public class University
             lose();
 	}
 
+//DISPLAY HELPERS
 	public string HUD()
 	{
         int studentPop = (int)studentPopulation;
@@ -128,9 +130,22 @@ public class University
     private void clock(){
         time++;
     }
+
+    private string Time(){
+        long tmp = time;
+        int years = (int)(tmp / YEAR);
+        tmp = tmp - years * YEAR;
+        int months = (int)(tmp / MONTH);
+        tmp = tmp - months * MONTH;
+        int days = (int)(tmp / DAY);
+        tmp = (long)((double)tmp - days * DAY);
+        int hours = (int)(tmp / HOUR);
+        return "Y.M.D.H: " + years.ToString() + "." + months.ToString() + "." + days.ToString() + "." + hours.ToString();
+    }
+
+//ADVANCEMENT HELPERS
     public string LevelToString(){
-        switch(level)
-        {
+        switch(level){
             case UniversityLevel.BreakingGround:
                 return "Breaking Ground!";
             case UniversityLevel.InitialExpansion:
@@ -148,18 +163,6 @@ public class University
         }
         return "N/A";
     }
-    private string Time(){
-        long tmp = time;
-        int years = (int)(tmp / YEAR);
-        tmp = tmp - years * YEAR;
-        int months = (int)(tmp / MONTH);
-        tmp = tmp - months * MONTH;
-        int days = (int)(tmp / DAY);
-        tmp = (long)((double)tmp - days * DAY);
-        int hours = (int)(tmp / HOUR);
-        return "Y.M.D.H: " + years.ToString() + "." + months.ToString() + "." + days.ToString() + "." + hours.ToString();
-    }
-    
     public void advanceLevel(World world)
     {
         switch(level)
@@ -301,11 +304,6 @@ public class University
         }
         return (hasLab && (studentPopulation >= 30000) && (residentPopulation >= 10000) && (coffers >= 1000000));
     }
-    public void addScholarship(double val){ scholarshipAllocation += val; }
-    public void addGrant(double val){ grantAllocation += val; }
-    public void addStudents(int val){ studentPopulation += val; }
-    public void addResidents(int val){ residentPopulation += val; }
-
     public bool breakingGround() { return level == UniversityLevel.BreakingGround; }
     public bool initialExpansion() { return level == UniversityLevel.InitialExpansion; }
     public bool stage1() { return level == UniversityLevel.Stage1; }
@@ -313,6 +311,13 @@ public class University
     public bool stage3() { return level == UniversityLevel.Stage3; }
     public bool victory() { return level == UniversityLevel.Victory; }
     public bool loss() { return level == UniversityLevel.Loss; }
+    public void lose(){ level = UniversityLevel.Loss; }
+
+//MISC HELPERS
+    public void addScholarship(double val) { scholarshipAllocation += val; }
+    public void addGrant(double val) { grantAllocation += val; }
+    public void addStudents(int val) { studentPopulation += val; }
+    public void addResidents(int val) { residentPopulation += val; }
 
     public void activateTimeAcc(){
         HOUR = 0.25/100;
@@ -331,12 +336,10 @@ public class University
         residentGrowthRate = residentGrowthRate * (1 + ((double)money / coffers));
         coffers = coffers - (double)money;
     }
-    public void lose(){
-        level = UniversityLevel.Loss;
-    }
 
 
-//MUTATORS
+
+//MUTATORS (some required for Save/Load to function)
 
 	public int Coffers{
 		get{ 
