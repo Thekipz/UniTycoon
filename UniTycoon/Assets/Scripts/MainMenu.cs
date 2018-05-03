@@ -1,17 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using VoxelBusters.NativePlugins;
 
 public class MainMenu : MonoBehaviour {
 
-    public SaveManager SaveManager { get; set; }
+    public AudioMixer audioMixer;
+    public float sliderVolume;
 
-    public void Awake()
-    {
-        SaveManager = this.gameObject.AddComponent<SaveManager>();
-    }
     public void PlayGame()
     {
  
@@ -41,8 +39,28 @@ public class MainMenu : MonoBehaviour {
 
     }
 
+    //Start new game button
     public void StartNewGame()
     {
-        SaveManager.DeleteSave();
+        SaveManager.Instance.DeleteSave();
+    }
+
+    //Settings Menu Volume Control
+    public void SetVolume(float volume)
+    {
+        audioMixer.SetFloat("volume", volume);
+        sliderVolume = volume;
+    }
+
+    //Setting Audio button (Turns Audio off)
+    public void OnAudioOff()
+    {
+        audioMixer.SetFloat("volume", -88);
+    }
+
+    //Setting Audio button (Turns Audio off)
+    public void OnAudioOn()
+    {
+        audioMixer.SetFloat("volume", sliderVolume);
     }
 }

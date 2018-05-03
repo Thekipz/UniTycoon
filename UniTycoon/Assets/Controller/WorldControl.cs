@@ -6,7 +6,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class WorldControl : MonoBehaviour {
 
-    public SaveLoad saveState;
+    //public SaveLoad saveState;
+    public SaveManager saveManager;
     public Text text_money,adminf1,adminf2,adminf3,hintCurrLvl,hintNxtLvl,hintReq1,hintReq2,hintReq3,hintReq4,advanceButtonTxt;
     public CanvasGroup uigrouptop, uigroupbottom, buildMenu, popup, funds_message, admin_menu,hintpopup,randompanel,ingameMenu,options;
     public float elapsed = 0f;
@@ -25,35 +26,65 @@ public class WorldControl : MonoBehaviour {
     public InputField AMF1, AMF2, AMF3; //admin menu inputfields
     int amf1val, amf2val, amf3val; //value of admin menu entries
     public Button bdorm, bclass, bgym, blib, bcafe, badmin, bstadium, bpark, blab, bcancel;
-	
-    // Initialize World
-    void Start() {
-        if (PlayerPrefs.HasKey("save")){   
-            saveState = Helper.Deserialize<SaveLoad>(PlayerPrefs.GetString("save"));    
-        }else{
-            saveState = new SaveLoad();
-        }
 
-        if(saveState.isNew){
+    //Load saved data if its there. This happens before Start
+    private void OnEnable()
+    {
+        saveManager = SaveManager.Instance;
+        saveManager.Load();
+        //If NewGame was selected
+        if (saveManager.saveState.isNew)
+        {
             university = new University();
             world = new World(10, 10, 35);
-        }else{
-            university = saveState.university.cloneThis();
-            world = new World(saveState.worldWidth, saveState.worldHeight, saveState.worldScale);
-            world.TotalStudentCapacity = saveState.worldStudCap;
-            world.TotalResidentCapacity = saveState.worldResCap;
+        }
+        else //If there is saved data
+        {
+            university = saveManager.saveState.university.cloneThis();
+            world = new World(saveManager.saveState.worldWidth, saveManager.saveState.worldHeight, saveManager.saveState.worldScale);
+            world.TotalStudentCapacity = saveManager.saveState.worldStudCap;
+            world.TotalResidentCapacity = saveManager.saveState.worldResCap;
             Tile[,] newTiles = new Tile[world.Width, world.Height];
             for (int i = 0; i < world.Width; i++)
             {
                 for (int j = 0; j < world.Height; j++)
                 {
-                    newTiles[i, j] = saveState.tiles[i + (world.Height * j)];
+                    newTiles[i, j] = saveManager.saveState.tiles[i + (world.Height * j)];
                     newTiles[i, j].X = i;
                     newTiles[i, j].Y = j;
                 }
             }
             world.setTileData(newTiles);
         }
+    }
+    // Initialize World
+    void Start() {
+        //if (PlayerPrefs.HasKey("save")){   
+        //    saveState = Helper.Deserialize<SaveLoad>(PlayerPrefs.GetString("save"));    
+        //}else{
+        //    saveState = new SaveLoad();
+        //}
+
+        //if(saveManager.saveState.isNew){
+        //    university = new University();
+        //    world = new World(10, 10, 35);
+        //}else{
+        //    university = saveManager.saveState.university.cloneThis();
+        //    world = new World(saveManager.saveState.worldWidth, saveManager.saveState.worldHeight, saveManager.saveState.worldScale);
+        //    world.TotalStudentCapacity = saveManager.saveState.worldStudCap;
+        //    world.TotalResidentCapacity = saveManager.saveState.worldResCap;
+        //    Tile[,] newTiles = new Tile[world.Width, world.Height];
+        //    for (int i = 0; i < world.Width; i++)
+        //    {
+        //        for (int j = 0; j < world.Height; j++)
+        //        {
+        //            newTiles[i, j] = saveManager.saveState.tiles[i + (world.Height * j)];
+        //            newTiles[i, j].X = i;
+        //            newTiles[i, j].Y = j;
+        //        }
+        //    }
+        //    world.setTileData(newTiles);
+        //}
 
 		Debug.Log ("Start...");
 		updateHUD ();
@@ -399,22 +430,44 @@ public class WorldControl : MonoBehaviour {
     public void closeOptions(){
         hideCG(options);
     }
-    public void saveGame()
+    //public void saveGame()
+    //{
+    //    saveState.university = university.cloneThis();
+    //    saveState.worldScale = world.Scale;
+    //    saveState.worldWidth = world.Width;
+    //    saveState.worldHeight = world.Height;
+    //    saveState.worldResCap = world.TotalResidentCapacity;
+    //    saveState.worldStudCap = world.TotalStudentCapacity;
+    //    saveState.tiles = new Tile[world.Width * world.Height];
+    //    for (int i = 0; i < world.Width; i++){
+    //        for (int j = 0;j < world.Height; j++){
+    //            saveState.tiles[i + (world.Height * j)] = world.GetTileAt(i, j);
+    //        }
+    //    }
+    //    saveState.isNew = false;
+    //    PlayerPrefs.SetString("save", Helper.Serialize<SaveLoad>(saveState));
+    //}
+
+
+    public void OnDisable()
     {
-        saveState.university = university.cloneThis();
-        saveState.worldScale = world.Scale;
-        saveState.worldWidth = world.Width;
-        saveState.worldHeight = world.Height;
-        saveState.worldResCap = world.TotalResidentCapacity;
-        saveState.worldStudCap = world.TotalStudentCapacity;
-        saveState.tiles = new Tile[world.Width * world.Height];
-        for (int i = 0; i < world.Width; i++){
-            for (int j = 0;j < world.Height; j++){
-                saveState.tiles[i + (world.Height * j)] = world.GetTileAt(i, j);
+        saveManager.saveState.university = university.cloneThis();
+        saveManager.saveState.worldScale = world.Scale;
+        saveManager.saveState.worldWidth = world.Width;
+        saveManager.saveState.worldHeight = world.Height;
+        saveManager.saveState.worldResCap = world.TotalResidentCapacity;
+        saveManager.saveState.worldStudCap = world.TotalStudentCapacity;
+        saveManager.saveState.tiles = new Tile[world.Width * world.Height];
+        for (int i = 0; i < world.Width; i++)
+        {
+            for (int j = 0; j < world.Height; j++)
+            {
+                saveManager.saveState.tiles[i + (world.Height * j)] = world.GetTileAt(i, j);
             }
         }
-        saveState.isNew = false;
-        PlayerPrefs.SetString("save", Helper.Serialize<SaveLoad>(saveState));
+        saveManager.saveState.isNew = false;
+        saveManager.Save();
+        //PlayerPrefs.SetString("save", Helper.Serialize<SaveLoad>(saveState));
     }
     public void quitToHS(){
         Application.Quit();
